@@ -1,6 +1,15 @@
 import { Routes } from '@angular/router';
 
 export const routes: Routes = [
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: 'login', component: Login },
+  { path: 'about-us', component: AboutUs },
+  { path: 'services', component: Services },
+  { path: 'staff-login', component: StaffLogin},
+  { path: 'vet-login', component: VetLogin},
+  { path: '**', redirectTo: 'login' },
+
+export const routes: Routes = [
   {
     path: '',
     loadComponent: () =>
