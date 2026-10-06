@@ -1,0 +1,40 @@
+<div class="page-center">
+  <div class="login-card">
+    <div class="image-side">
+      <img src="https://media.istockphoto.com/photos/group-of-dogs-picture-id665117608?k=20&m=665117608&s=612x612&w=0&h=PMSjx1Tb7IH-UG8vQ2Iayul7wWfYeTD79hnPkP3o0XY=" alt="Veterinarian Doctor">
+    </div>
+
+    <div class="content-side">
+      <a href="#" class="help-nav">Help</a>
+      <h1 class="clinic-name">PETBLOOM ANIMAL CLINIC</h1>
+      <h2 class="page-title">VETERINARIAN PORTAL</h2>
+
+      <form class="form-container" (ngSubmit)="onSubmit()">
+
+        <div class="form-group">
+          <label for="vetId">VET ID</label>
+          <input type="text" id="vetId" name="vetId" [(ngModel)]="vetId" (input)="errorMessage = ''" placeholder="e.g., 1">
+        </div>
+
+        <div class="form-group last">
+          <label for="password">PASSWORD</label>
+          <input type="password" id="password" name="password" [(ngModel)]="password" (input)="errorMessage = ''" placeholder="e.g., vet123">
+
+          @if (errorMessage) {
+            <div class="error-box">&#9888; {{ errorMessage }}</div>
+          }
+        </div>
+
+        <button type="submit" class="btn-login">LOG IN</button>
+
+        <div class="signup-text">
+          New Doctor to the Clinic? <a href="#" class="signup-link">Sign Up Here</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<footer>
+  &copy; 2026 PetBloom Animal Clinic &nbsp;|&nbsp; No. 8, Jalan Telawi 3, Bangsar Baru, 59100 Kuala Lumpur, Wilayah Persekutuan Kuala Lumpur &nbsp;|&nbsp; 06-123 4567
+</footer>

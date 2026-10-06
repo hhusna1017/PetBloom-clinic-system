@@ -1,0 +1,40 @@
+<div class="page-center">
+  <div class="login-card">
+    <div class="image-side">
+      <img src="https://otto.vet/wp-content/uploads/2024/05/shutterstock_2423070353-scaled-1.jpg" alt="Clinic Staff">
+    </div>
+
+    <div class="content-side">
+      <a href="#" class="help-nav">Help</a>
+      <h1 class="clinic-name">PETBLOOM ANIMAL CLINIC</h1>
+      <h2 class="page-title">WELCOME TO STAFF PAGE</h2>
+
+      <form class="form-container" (ngSubmit)="onSubmit()">
+
+        <div class="form-group">
+          <label for="staffId">STAFF ID</label>
+          <input type="text" id="staffId" name="staffId" [(ngModel)]="staffId" (input)="errorMessage = ''" placeholder="e.g: 1">
+        </div>
+
+        <div class="form-group last">
+          <label for="password">PASSWORD</label>
+          <input type="password" id="password" name="password" [(ngModel)]="password" (input)="errorMessage = ''" placeholder="e.g: staff123">
+
+          @if (errorMessage) {
+            <div class="error-box">&#9888; {{ errorMessage }}</div>
+          }
+        </div>
+
+        <button type="submit" class="btn-login">LOG IN</button>
+
+        <div class="signup-text">
+          Don't Have An Account? <a href="#" class="signup-link">Sign Up</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<footer>
+  &copy; 2026 PetBloom Animal Clinic &nbsp;|&nbsp; No. 8, Jalan Telawi 3, Bangsar Baru, 59100 Kuala Lumpur, Wilayah Persekutuan Kuala Lumpur &nbsp;|&nbsp; 06-123 4567
+</footer>
