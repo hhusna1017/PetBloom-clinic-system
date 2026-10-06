@@ -1,0 +1,192 @@
+<div class="h-screen bg-[#eaf6f6] flex flex-col justify-between overflow-hidden">
+
+  <!-- Navbar -->
+  <div id="navbar">
+    <div>
+      <a href="#">About Us</a>
+      <a href="#">Service</a>
+    </div>
+    <div id="logo-area">
+      <div id="logo-icon">🐾</div>
+      <div id="logo-text">
+        PetBloom
+        <span>Veterinary</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="flex-1 flex items-center justify-center px-4 py-4">
+
+    <!-- Registration Card -->
+    <div class="w-full max-w-[950px] bg-white rounded-[20px] overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.08)] flex flex-col md:flex-row my-auto">
+
+      <!-- FORM SIDE -->
+      <div class="w-full md:w-1/2 p-6 md:p-8 flex flex-col justify-center">
+
+        <!-- Title -->
+        <h2 class="text-[#004d61] text-[22px] font-bold mb-4 tracking-wide uppercase" style="font-family: 'Playfair Display', serif;">
+          Register Vet Account
+        </h2>
+
+        <!-- Error Message -->
+        @if (errorMessage) {
+          <div class="bg-red-100 text-red-600 border-l-4 border-red-600 p-1.5 text-xs text-center rounded mb-3">
+            ⚠️ {{ errorMessage }}
+          </div>
+        }
+
+        <!-- Form Container -->
+        <div class="bg-[#a2ebd8] rounded-[15px] p-5">
+          <form (ngSubmit)="onSubmit()" class="space-y-3">
+
+            <!-- Full Name -->
+            <div>
+              <label class="block text-[#1c4a44] font-bold text-[11px] uppercase tracking-[0.8px] mb-1">
+                Full Name
+              </label>
+              <input
+                type="text"
+                [(ngModel)]="vetName"
+                name="vetName"
+                required
+                placeholder="e.g., Arisya (without Dr.)"
+                class="w-full px-3.5 py-2 bg-white rounded-full border-2 border-transparent outline-none text-xs text-[#333] focus:border-[#007a87]"
+              />
+            </div>
+
+            <!-- Phone Number & Specialization Side-by-Side -->
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[#1c4a44] font-bold text-[11px] uppercase tracking-[0.8px] mb-1">
+                  Phone Number
+                </label>
+                <input
+                  type="text"
+                  [(ngModel)]="vetPhone"
+                  name="vetPhone"
+                  required
+                  placeholder="0123456789"
+                  class="w-full px-3.5 py-2 bg-white rounded-full border-2 border-transparent outline-none text-xs text-[#333] focus:border-[#007a87]"
+                />
+              </div>
+
+              <div>
+                <label class="block text-[#1c4a44] font-bold text-[11px] uppercase tracking-[0.8px] mb-1">
+                  Specialization
+                </label>
+                <select
+                  [(ngModel)]="specialization"
+                  name="specialization"
+                  required
+                  class="w-full px-3.5 py-2 bg-white rounded-full border-2 border-transparent outline-none text-xs text-[#333] focus:border-[#007a87] cursor-pointer"
+                >
+                  <option value="" disabled selected>-- Select --</option>
+                  @for (spec of specializations; track spec) {
+                    <option [value]="spec">{{ spec }}</option>
+                  }
+                </select>
+              </div>
+            </div>
+
+            <!-- Working Days -->
+            <div>
+              <label class="block text-[#1c4a44] font-bold text-[11px] uppercase tracking-[0.8px] mb-1">
+                Working Days
+              </label>
+              <div class="flex items-center gap-3 py-1">
+                @for (day of availableDays; track day) {
+                  <label class="flex items-center gap-1.5 text-xs text-[#1c4a44] cursor-pointer">
+                    <input
+                      type="checkbox"
+                      [value]="day"
+                      (change)="onDayChange(day, $event)"
+                      class="w-3.5 h-3.5 accent-[#007a87]"
+                    />
+                    {{ day }}
+                  </label>
+                }
+              </div>
+            </div>
+
+            <!-- Operating Hours & Shift -->
+            <div>
+              <label class="block text-[#1c4a44] font-bold text-[11px] uppercase tracking-[0.8px] mb-1">
+                🕐 Working Shift
+              </label>
+              
+              <div class="grid grid-cols-3 gap-1.5">
+                @for (shift of shifts; track shift.value) {
+                  <label
+                    class="flex items-center justify-center gap-1.5 p-1.5 bg-white rounded-md cursor-pointer text-center hover:border-[#007a87]"
+                    [class.opacity-50]="!isShiftAvailable(shift.value)"
+                    [class.pointer-events-none]="!isShiftAvailable(shift.value)"
+                  >
+                    <input
+                      type="radio"
+                      name="workShift"
+                      [value]="shift.value"
+                      [(ngModel)]="workShift"
+                      [disabled]="!isShiftAvailable(shift.value)"
+                      required
+                      class="w-3.5 h-3.5 accent-[#007a87]"
+                    />
+                    <span class="text-[11px] text-[#333] font-medium">{{ shift.value }}</span>
+                  </label>
+                }
+              </div>
+            </div>
+
+            <!-- Password -->
+            <div>
+              <label class="block text-[#1c4a44] font-bold text-[11px] uppercase tracking-[0.8px] mb-1">
+                Password
+              </label>
+              <input
+                type="password"
+                [(ngModel)]="password"
+                name="password"
+                required
+                placeholder="Create a password"
+                class="w-full px-3.5 py-2 bg-white rounded-full border-2 border-transparent outline-none text-xs text-[#333] focus:border-[#007a87]"
+              />
+            </div>
+
+            <!-- Bottom Action -->
+            <div class="flex justify-between items-center pt-3">
+              <a routerLink="/login" class="text-xs text-[#004d61] underline font-bold hover:text-[#002b36]">
+                Already have an account? Sign In
+              </a>
+
+              <button
+                type="submit"
+                class="bg-[#008ba3] text-white px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-wide shadow-md hover:bg-[#00687a] transition-all cursor-pointer"
+              >
+                Register
+              </button>
+            </div>
+
+          </form>
+        </div>
+
+      </div>
+
+      <!-- IMAGE SIDE -->
+      <div class="w-full md:w-1/2 min-h-[300px] md:min-h-full overflow-hidden order-first md:order-last">
+        <img
+          src="https://cdn.pixabay.com/photo/2017/02/20/18/03/cat-2083492_1280.jpg"
+          alt="Cat at Vet"
+          class="w-full h-full object-cover hover:scale-[1.03] transition-transform duration-500"
+        />
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="w-full text-center py-2 text-[11px] text-gray-600 border-t border-gray-200">
+    &copy; 2026 PetBloom Animal Clinic &nbsp;|&nbsp; No. 8, Jalan Telawi 3, Bangsar Baru, 59100 Kuala Lumpur &nbsp;|&nbsp; 06-123 4567
+  </footer>
+
+</div>

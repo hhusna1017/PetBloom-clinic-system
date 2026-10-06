@@ -1,0 +1,163 @@
+<div class="min-h-screen bg-[#eaf6f6] flex flex-col">
+
+  <!-- Navbar -->
+  <div id="navbar">
+    <div>
+      <a href="#">About Us</a>
+      <a href="#">Service</a>
+    </div>
+    <div id="logo-area">
+      <div id="logo-icon">🐾</div>
+      <div id="logo-text">
+        PetBloom
+        <span>Veterinary</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <main class="flex-1 flex items-center justify-center px-5 py-10">
+
+    <!-- Registration Card -->
+    <div class="w-full max-w-[950px] min-h-[550px] bg-white rounded-[20px] overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.08)] flex flex-col md:flex-row">
+
+      <!-- FORM SIDE -->
+      <div class="w-full md:w-1/2 p-7 md:p-10 flex flex-col justify-center">
+
+        <!-- Title -->
+        <h2 class="text-[#004d61] text-[22px] font-bold mb-5 tracking-wide" style="font-family: 'Playfair Display', serif;">
+          STAFF REGISTRATION
+        </h2>
+
+        <!-- Messages -->
+        @if (errorMessage()) {
+          <div class="mb-3 rounded-lg border-l-4 border-red-600 bg-red-100 px-3 py-2 text-[13px] font-semibold text-red-600" role="alert">
+            {{ errorMessage() }}
+          </div>
+        }
+        @if (successMessage()) {
+          <div class="mb-3 rounded-lg border-l-4 border-[#004d61] bg-[#a2ebd8] px-3 py-2 text-[13px] font-semibold text-[#004d61]" role="status">
+            {{ successMessage() }}
+          </div>
+        }
+
+        <!-- Form Container -->
+        <div class="bg-[#a2ebd8] rounded-[15px] p-6">
+          <form class="space-y-3" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+
+            <!-- Staff Name -->
+            <div>
+              <label for="staffName" class="block text-[#1c4a44] font-bold text-[11px] uppercase tracking-[0.8px] mb-1">
+                Staff Name
+              </label>
+              <input
+                id="staffName"
+                formControlName="staffName"
+                type="text"
+                placeholder="e.g., Dr. Safwan"
+                class="w-full px-[18px] py-[10px] bg-white rounded-full border-2 border-transparent outline-none text-sm text-[#333] focus:border-[#007a87] focus:ring-4 focus:ring-[#007a87]/15"
+              />
+              @if (showError('staffName')) {
+                <p class="mt-1 ml-4 text-xs font-semibold text-red-600">Please enter the staff name.</p>
+              }
+            </div>
+
+            <!-- Phone Number -->
+            <div>
+              <label for="staffPhone" class="block text-[#1c4a44] font-bold text-[11px] uppercase tracking-[0.8px] mb-1">
+                Staff Phone Number
+              </label>
+              <input
+                id="staffPhone"
+                formControlName="staffPhone"
+                type="text"
+                inputmode="numeric"
+                placeholder="e.g., 0176543210"
+                class="w-full px-[18px] py-[10px] bg-white rounded-full border-2 border-transparent outline-none text-sm text-[#333] focus:border-[#007a87] focus:ring-4 focus:ring-[#007a87]/15"
+              />
+              @if (showError('staffPhone')) {
+                <p class="mt-1 ml-4 text-xs font-semibold text-red-600">Enter 9 to 11 digits, numbers only.</p>
+              }
+            </div>
+
+            <!-- Staff Role -->
+            <div>
+              <label for="staffRole" class="block text-[#1c4a44] font-bold text-[11px] uppercase tracking-[0.8px] mb-1">
+                Staff Role
+              </label>
+              <div class="relative">
+                <select
+                  id="staffRole"
+                  formControlName="staffRole"
+                  class="w-full appearance-none px-[18px] py-[10px] pr-10 bg-white rounded-full border-2 border-transparent outline-none text-sm text-[#333] focus:border-[#007a87] focus:ring-4 focus:ring-[#007a87]/15"
+                >
+                  <option value="">-- Select Role --</option>
+                  @for (role of roles; track role) {
+                    <option [value]="role">{{ role }}</option>
+                  }
+                </select>
+                <svg class="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#004d61]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M7 10l5 5 5-5z" />
+                </svg>
+              </div>
+              @if (showError('staffRole')) {
+                <p class="mt-1 ml-4 text-xs font-semibold text-red-600">Please select a role.</p>
+              }
+            </div>
+
+            <!-- Password -->
+            <div>
+              <label for="password" class="block text-[#1c4a44] font-bold text-[11px] uppercase tracking-[0.8px] mb-1">
+                Password
+              </label>
+              <input
+                id="password"
+                formControlName="password"
+                type="password"
+                autocomplete="new-password"
+                placeholder="Create a password"
+                class="w-full px-[18px] py-[10px] bg-white rounded-full border-2 border-transparent outline-none text-sm text-[#333] focus:border-[#007a87] focus:ring-4 focus:ring-[#007a87]/15"
+              />
+              @if (showError('password')) {
+                <p class="mt-1 ml-4 text-xs font-semibold text-red-600">Password must be at least 8 characters.</p>
+              }
+            </div>
+
+            <!-- Bottom Action -->
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-3 mt-5">
+              <a href="/" class="text-xs text-[#004d61] underline font-bold hover:text-[#002b36]">
+                Already have an account? Sign In
+              </a>
+
+              <button
+                type="submit"
+                [disabled]="loading()"
+                class="bg-[#008ba3] text-white px-8 py-2.5 rounded-full font-bold text-[13px] uppercase tracking-wide shadow-[0_4px_12px_rgba(0,139,163,0.35)] hover:bg-[#00687a] hover:-translate-y-[1px] transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
+              >
+                {{ loading() ? 'Please wait...' : 'Register' }}
+              </button>
+            </div>
+
+          </form>
+        </div>
+
+      </div>
+
+      <!-- IMAGE SIDE -->
+      <div class="w-full md:w-1/2 h-[250px] md:h-auto overflow-hidden order-first md:order-last">
+        <img
+          src="https://mixlab.com/hubfs/shutterstock_2485692303.jpg"
+          alt="Veterinarian with dog"
+          class="w-full h-full object-cover hover:scale-[1.03] transition-transform duration-500"
+        />
+      </div>
+
+    </div>
+
+  </main>
+
+  <footer>
+    &copy; 2026 PetBloom Animal Clinic &nbsp;|&nbsp; No. 8, Jalan Telawi 3, Bangsar Baru, 59100 Kuala Lumpur, Wilayah Persekutuan Kuala Lumpur &nbsp;|&nbsp; 06-123 4567
+  </footer>
+
+</div>
