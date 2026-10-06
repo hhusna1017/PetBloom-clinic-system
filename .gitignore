@@ -1,0 +1,37 @@
+# --- Secrets and personal data (never commit) ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets.json
+
+# --- Python / Django (backend) ---
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+db.sqlite3
+db.sqlite3-journal
+*.log
+staticfiles/
+media/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# --- Node / Angular (frontend) ---
+node_modules/
+dist/
+.angular/
+.sass-cache/
+npm-debug.log*
+yarn-error.log
+coverage/
+
+# --- Editors and OS ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
