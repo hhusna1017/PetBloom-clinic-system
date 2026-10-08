@@ -1,0 +1,28 @@
+/* Layout & warna semua guna Tailwind dalam .html.
+   Fail ni cuma simpan benda yang Tailwind tak cover secara default. */
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+
+:host {
+  display: block;
+}
+
+.font-nunito {
+  font-family: 'Nunito', sans-serif;
+}
+
+/* Animasi modal */
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.25s ease;
+}

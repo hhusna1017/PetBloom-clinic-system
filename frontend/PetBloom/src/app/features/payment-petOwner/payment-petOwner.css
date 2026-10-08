@@ -1,0 +1,29 @@
+/* Sebahagian besar styling dah guna Tailwind dalam HTML.
+   Fail ni cuma untuk benda yang Tailwind tak cover terus. */
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Fredoka+One&display=swap');
+
+:host {
+  display: block;
+  font-family: 'Nunito', sans-serif;
+}
+
+/* Digunakan sebagai class "font-fredoka" dalam HTML */
+.font-fredoka {
+  font-family: 'Fredoka One', cursive;
+}
+
+/* Animasi bila modal muncul */
+.modal-in {
+  animation: modalIn 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #eef9f6; }
+::-webkit-scrollbar-thumb { background: #a2dfd0; border-radius: 4px; }

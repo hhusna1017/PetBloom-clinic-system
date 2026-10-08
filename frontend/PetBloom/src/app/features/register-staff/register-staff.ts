@@ -1,10 +1,11 @@
 import { Component, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router'; // 1. TAMBAH IMPORT NI!
 
 @Component({
   selector: 'app-register-staff',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, RouterLink], // 2. MASUKKAN RouterLink DI SINI!
   templateUrl: './register-staff.html',
   styleUrl: './register-staff.css',
 })
@@ -18,7 +19,8 @@ export class RegisterStaffComponent {
 
   readonly form;
 
-  constructor(private fb: FormBuilder) {
+  // 3. TAMBAH private router: Router DI CONSTRUCTOR
+  constructor(private fb: FormBuilder, private router: Router) {
     this.form = this.fb.nonNullable.group({
       staffName: ['', [Validators.required, Validators.maxLength(100)]],
       // digits only, 9 to 11 digits (e.g. 0176543210)
@@ -53,6 +55,9 @@ export class RegisterStaffComponent {
         `Staff registration successful! Your Staff ID is ${fakeStaffId}. You can now log in.`,
       );
       this.form.reset();
+
+      // 4. (OPSIONAL) AUTO REDIRECT KE LOGIN LEPAS BERJAYA REGISTER
+      // this.router.navigate(['/staff-login']);
     }, 600);
   }
 }

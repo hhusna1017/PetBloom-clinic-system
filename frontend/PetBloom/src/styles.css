@@ -1,13 +1,13 @@
 /* You can add global styles to this file, and also import other style files */
-   @import "tailwindcss";
-   * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  font-family: Arial, sans-serif;
-  background-color: #f0faf9;
-}
 @import "tailwindcss";
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f0faf9;
+  }
+}
