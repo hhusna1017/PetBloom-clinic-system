@@ -6,6 +6,60 @@
   background-color: #f0faf9;
 }
 
+/* ===== Navbar ===== */
+#navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 60px;
+  background: #fff;
+  border-bottom: 2px solid #4db6a4;
+}
+
+.nav-link {
+  color: #4db6a4;
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: none;
+  margin-right: 22px;
+}
+
+.nav-link:hover { text-decoration: underline; }
+
+#logo-area {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#logo-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #4db6a4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+
+#logo-text {
+  color: #4db6a4;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+#logo-text span {
+  display: block;
+  color: #888;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* ===== Login card ===== */
 .page-center {
   flex: 1;
   display: flex;
@@ -107,6 +161,7 @@ footer {
 }
 
 @media (max-width: 768px) {
+  #navbar { padding: 12px 20px; }
   .login-card { flex-direction: column; }
   .image-side, .content-side { width: 100%; }
   .image-side { height: 250px; }
