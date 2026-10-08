@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
-import { Login } from './features/login/login-petowner';
-import { AboutUs } from './features/about/about';
-import { Services } from './features/services/service';
-import { StaffLogin } from './features/staff-login/staff-login';
-import { VetLogin } from './features/vet-login/vet-login';
+<<<<<<< HEAD
+import { PaymentPetOwner } from './features/payment-petOwner/payment-petOwner';
+import { ProfilePetOwner } from './features/profile/profile-petOwner';
+=======
+>>>>>>> 68794e07d837f9a241efa340bd3eee514abdb9bd
 
 export const routes: Routes = [
   {
