@@ -6,6 +6,63 @@
   background-color: #f0faf9;
 }
 
+/* NAV */
+#navbar {
+  background-color: #ffffff;
+  border-bottom: 2px solid #00b5a5;
+  padding: 10px 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#navbar a {
+  text-decoration: none;
+  color: #00b5a5;
+  font-size: 14px;
+  font-weight: bold;
+  margin-left: 20px;
+}
+
+#navbar a:hover {
+  color: #007a6e;
+  text-decoration: underline;
+}
+
+#logo-area {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#logo-icon {
+  background-color: #00b5a5;
+  color: white;
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+#logo-text {
+  font-size: 13px;
+  font-weight: bold;
+  color: #00b5a5;
+  line-height: 1.2;
+}
+
+#logo-text span {
+  display: block;
+  font-size: 10px;
+  color: #888;
+  font-weight: normal;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
 .page-center {
   flex: 1;
   display: flex;

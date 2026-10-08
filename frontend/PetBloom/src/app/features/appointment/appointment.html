@@ -1,0 +1,342 @@
+<!-- HEADER -->
+<header class="sticky top-0 z-50 flex items-center gap-3.5 border-b-2 border-[#39c0a6] bg-white px-6 py-2.5">
+  <div class="flex items-center gap-3">
+    <div class="h-12 w-12 shrink-0 overflow-hidden rounded-full bg-[#fdfdf9] ring-2 ring-[#a2dfd0]">
+      <img
+        src="petbloom-logo.jpeg"
+        alt="PetBloom logo"
+        class="h-full w-full translate-y-[3%] scale-[0.9] object-cover"
+      />
+    </div>
+    <div class="leading-tight">
+      <div class="font-display text-lg text-[#2a9e84]">PetBloom</div>
+      <div class="text-[11px] font-semibold uppercase tracking-[1.5px] text-[#888]">Veterinary</div>
+    </div>
+  </div>
+  <div class="mx-2.5 h-9 w-0.5 bg-[#a2dfd0]"></div>
+  <div class="font-display text-[22px] tracking-wide text-[#1c4a5a]">📅 My Appointments</div>
+</header>
+
+<div class="flex min-h-[calc(100vh-72px)] flex-1">
+  <!-- SIDEBAR -->
+  <aside class="flex w-[210px] min-w-[210px] flex-col border-r-2 border-[#a2dfd0] bg-white py-6">
+    <div class="px-5 pb-2.5 text-[10px] font-extrabold uppercase tracking-[1.5px] text-[#2a9e84]">Main Menu</div>
+    <nav class="flex flex-1 flex-col">
+      @for (item of menu; track item.link) {
+        <a
+          [routerLink]="item.link"
+          routerLinkActive="active-link"
+          class="flex items-center gap-2.5 border-l-4 border-transparent px-5 py-3 text-sm font-bold text-[#1c4a5a] transition hover:border-[#a2dfd0] hover:bg-[#f0fdfb] hover:text-[#2a9e84]"
+        >
+          {{ item.icon }} {{ item.label }}
+        </a>
+      }
+    </nav>
+    <div class="mt-auto flex flex-col gap-2.5 px-4">
+      <button
+        type="button"
+        (click)="openBookModal()"
+        class="font-display w-full rounded-xl bg-[#3abfa0] px-3 py-3.5 text-[15px] leading-snug tracking-wide text-white transition hover:-translate-y-px hover:bg-[#2a9e84]"
+      >
+        Book<br />Appointment
+      </button>
+      <button
+        type="button"
+        (click)="modal.set('logout')"
+        class="font-display w-full rounded-xl border-2 border-[#3abfa0] bg-white py-3 text-[15px] text-[#3abfa0] transition hover:bg-[#3abfa0] hover:text-white"
+      >
+       Logout
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="relative flex flex-1 flex-col gap-6 overflow-x-auto bg-[#c8f0e8] px-11 py-9">
+    <div class="overflow-hidden rounded-2xl bg-white shadow-[0_4px_20px_rgba(58,191,160,0.12)]">
+      <table class="w-full border-collapse">
+        <thead>
+          <tr class="bg-[#3abfa0]">
+            @for (h of headers; track h) {
+              <th class="font-display px-4 py-4 text-center text-[15px] font-normal tracking-wide text-white">{{ h }}</th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @if (loading()) {
+            <tr>
+              <td colspan="9" class="p-7 text-center text-[#6b8a94]">Loading appointments...</td>
+            </tr>
+          } @else if (appointments().length === 0) {
+            <tr>
+              <td colspan="9" class="p-7 text-center text-[#6b8a94]">No appointments found.</td>
+            </tr>
+          } @else {
+            @for (a of appointments(); track a.id) {
+              <tr class="border-b border-[#c8f0e8] text-sm font-semibold text-[#1c4a5a] transition last:border-b-0 hover:bg-[#f5fdfb]">
+                <td class="px-4 py-4 text-center">
+                  <input
+                    type="radio"
+                    name="selected_app"
+                    class="h-4 w-4 cursor-pointer accent-[#3abfa0]"
+                    [checked]="selectedId() === a.id"
+                    (change)="selectRow(a.id)"
+                  />
+                </td>
+                <td class="px-4 py-4 text-center">{{ a.date }}</td>
+                <td class="px-4 py-4 text-center">{{ formatTime(a.time) }}</td>
+                <td class="px-4 py-4 text-center">{{ a.petName }}</td>
+                <td class="px-4 py-4 text-center">{{ a.treatmentName || '-' }}</td>
+                <td class="px-4 py-4 text-center">{{ a.cost !== null ? 'RM ' + a.cost.toFixed(2) : '-' }}</td>
+                <td class="px-4 py-4 text-center">
+                  <span class="rounded-full px-2.5 py-[3px] text-xs font-bold" [class]="payClass(a.paymentMethod)">
+                    {{ a.paymentMethod }}
+                  </span>
+                </td>
+                <td class="px-4 py-4 text-center">{{ a.vetName ? 'Dr. ' + a.vetName : 'Not Assigned' }}</td>
+                <td class="px-4 py-4 text-center">
+                  <span class="inline-block rounded-full px-3.5 py-1 text-xs font-extrabold tracking-wide" [class]="statusClass(a.status)">
+                    {{ a.status }}
+                  </span>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Action buttons -->
+    <div class="flex items-center gap-3.5">
+      <button
+        type="button"
+        (click)="openViewModal()"
+        class="font-display rounded-full border-2 border-[#3abfa0] bg-white px-8 py-3 text-[15px] tracking-wide text-[#1c4a5a] transition hover:-translate-y-px hover:bg-[#3abfa0] hover:text-white"
+      >
+        View
+      </button>
+      <button
+        type="button"
+        (click)="openCancelModal()"
+        class="font-display rounded-full border-2 border-[#3abfa0] bg-white px-8 py-3 text-[15px] tracking-wide text-[#1c4a5a] transition hover:-translate-y-px hover:bg-[#3abfa0] hover:text-white"
+      >
+        Cancel
+      </button>
+      @if (notice()) {
+        <span class="text-sm font-bold text-[#842029]">{{ notice() }}</span>
+      }
+    </div>
+  </main>
+</div>
+
+<!-- MODAL: BOOK APPOINTMENT -->
+@if (modal() === 'book') {
+  <div
+    class="fixed inset-0 z-[200] flex items-center justify-center bg-[rgba(28,74,90,0.38)] backdrop-blur-[2px]"
+    (click)="closeModal()"
+  >
+    <div
+      class="modal-box max-h-[90vh] w-[460px] max-w-[95vw] overflow-y-auto rounded-[20px] bg-white p-9 shadow-[0_16px_48px_rgba(28,74,90,0.2)]"
+      (click)="$event.stopPropagation()"
+    >
+      <h2 class="font-display mb-5 text-[22px] text-[#1c4a5a]">📅 Book Appointment</h2>
+
+      <!-- Operating hours -->
+      <div class="mb-4 rounded-[10px] border-[1.5px] border-[#b2e8e0] bg-[#f0fbf8] px-4 py-3 text-[13px]">
+        <div class="mb-1.5 font-extrabold text-[#2a9e84]">🕐 Clinic Operating Hours</div>
+        <div class="flex flex-col gap-1 text-[#1c4a5a]">
+          <div class="flex justify-between"><span>Monday – Tuesday</span><span class="font-bold">8:00 AM – 1:00 PM</span></div>
+          <div class="flex justify-between"><span>Monday (Afternoon)</span><span class="font-bold">2:00 PM – 6:00 PM</span></div>
+          <div class="flex justify-between"><span>Wednesday</span><span class="font-bold">8:00 AM – 6:00 PM</span></div>
+          <div class="flex justify-between text-[#aaa]"><span>Thursday – Sunday</span><span class="font-bold">Closed</span></div>
+        </div>
+      </div>
+
+      <form (ngSubmit)="bookAppointment()" #bookForm="ngForm">
+        <div class="mb-3.5">
+          <label for="date" class="field-label">Date</label>
+          <input
+            id="date"
+            name="date"
+            type="date"
+            class="field"
+            required
+            [min]="today"
+            [(ngModel)]="form.date"
+            (ngModelChange)="loadAvailableVets()"
+          />
+        </div>
+
+        <div class="mb-3.5">
+          <label for="time" class="field-label">Time</label>
+          <input
+            id="time"
+            name="time"
+            type="time"
+            class="field"
+            required
+            [(ngModel)]="form.time"
+            (ngModelChange)="loadAvailableVets()"
+          />
+        </div>
+
+        <div class="mb-3.5">
+          <label for="pet" class="field-label">Select Pet</label>
+          <select id="pet" name="pet" class="field select-field" required [(ngModel)]="form.petId">
+            <option [ngValue]="null" disabled>-- Choose a Pet --</option>
+            @for (p of pets(); track p.id) {
+              <option [ngValue]="p.id">{{ p.name }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3.5">
+          <label for="treatment" class="field-label">Select Treatment</label>
+          <select
+            id="treatment"
+            name="treatment"
+            class="field select-field"
+            required
+            [(ngModel)]="form.treatmentName"
+            (ngModelChange)="onTreatmentChange()"
+          >
+            <option value="" disabled>-- Choose a Treatment --</option>
+            @for (t of treatments; track t.name) {
+              <option [value]="t.name">{{ t.name }} — RM {{ t.price.toFixed(2) }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3.5">
+          <span class="field-label">Treatment Cost</span>
+          <div class="rounded-[10px] border-2 border-[#3abfa0] bg-[#f0fbf8] px-3.5 py-2.5 text-[15px] font-bold text-[#1c4a5a]">
+            @if (cost() !== null) {
+              Treatment Cost: <span class="text-lg text-[#3abfa0]">RM {{ cost()!.toFixed(2) }}</span>
+            } @else {
+              Select a treatment to see the cost
+            }
+          </div>
+        </div>
+
+        <!-- Clickable price list -->
+        <div class="mb-3.5 overflow-hidden rounded-xl border-2 border-[#a2dfd0]">
+          <div class="bg-[#3abfa0] px-3.5 py-2 text-[13px] font-extrabold text-white">
+            📋 Treatment Price List (click to select)
+          </div>
+          <div class="max-h-40 overflow-y-auto">
+            @for (t of treatments; track t.name) {
+              <div
+                class="flex cursor-pointer items-center justify-between border-b border-[#e8f8f5] px-3.5 py-[7px] text-[13px] transition last:border-b-0 hover:bg-[#e6f9f5]"
+                [class.bg-[#d0f5ec]]="form.treatmentName === t.name"
+                [class.font-bold]="form.treatmentName === t.name"
+                (click)="selectFromList(t.name)"
+              >
+                <span class="text-[#1c4a5a]">💉 {{ t.name }}</span>
+                <span class="ml-2.5 whitespace-nowrap font-extrabold text-[#3abfa0]">RM {{ t.price.toFixed(2) }}</span>
+              </div>
+            }
+          </div>
+        </div>
+
+        @if (showVetGroup()) {
+          <div class="mb-3.5">
+            <label for="vet" class="field-label">Assigned Veterinarian</label>
+            <select id="vet" name="vet" class="field select-field" [(ngModel)]="form.vetId">
+              <option [ngValue]="null">-- Choose a Vet --</option>
+              @for (v of availableVets(); track v.id) {
+                <option [ngValue]="v.id">Dr. {{ v.name }} ({{ v.specialization }})</option>
+              }
+            </select>
+            <div class="mt-1 text-xs text-[#888]">{{ vetHint() }}</div>
+          </div>
+        }
+
+        <div class="mt-4 flex justify-end gap-2.5">
+          <button
+            type="button"
+            (click)="closeModal()"
+            class="font-display rounded-full border-2 border-[#3abfa0] bg-white px-8 py-3 text-[15px] text-[#1c4a5a] transition hover:bg-[#3abfa0] hover:text-white"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            [disabled]="bookForm.invalid || saving()"
+            class="font-display rounded-full border-2 border-[#3abfa0] bg-[#3abfa0] px-8 py-3 text-[15px] text-white transition hover:bg-[#2a9e84] disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            Book
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+}
+
+<!-- MODAL: VIEW APPOINTMENT -->
+@if (modal() === 'view' && selected(); as a) {
+  <div
+    class="fixed inset-0 z-[200] flex items-center justify-center bg-[rgba(28,74,90,0.38)] backdrop-blur-[2px]"
+    (click)="closeModal()"
+  >
+    <div
+      class="modal-box w-[420px] max-w-[95vw] rounded-[20px] bg-white p-9 shadow-[0_16px_48px_rgba(28,74,90,0.2)]"
+      (click)="$event.stopPropagation()"
+    >
+      <h2 class="font-display mb-5 text-[22px] text-[#1c4a5a]">Appointment Details</h2>
+      <div class="flex flex-col gap-2.5 text-sm font-semibold text-[#1c4a5a]">
+        <div class="flex justify-between"><span class="text-[#888]">ID</span><span>{{ a.id }}</span></div>
+        <div class="flex justify-between"><span class="text-[#888]">Date</span><span>{{ a.date }}</span></div>
+        <div class="flex justify-between"><span class="text-[#888]">Time</span><span>{{ formatTime(a.time) }}</span></div>
+        <div class="flex justify-between"><span class="text-[#888]">Pet</span><span>{{ a.petName }}</span></div>
+        <div class="flex justify-between"><span class="text-[#888]">Treatment</span><span>{{ a.treatmentName || '-' }}</span></div>
+        <div class="flex justify-between"><span class="text-[#888]">Cost</span><span>{{ a.cost !== null ? 'RM ' + a.cost.toFixed(2) : '-' }}</span></div>
+        <div class="flex justify-between"><span class="text-[#888]">Veterinarian</span><span>{{ a.vetName ? 'Dr. ' + a.vetName : 'Not Assigned' }}</span></div>
+        <div class="flex justify-between"><span class="text-[#888]">Status</span><span>{{ a.status }}</span></div>
+      </div>
+      <div class="mt-6 flex justify-end">
+        <button
+          type="button"
+          (click)="closeModal()"
+          class="font-display rounded-full border-2 border-[#3abfa0] bg-[#3abfa0] px-8 py-3 text-[15px] text-white transition hover:bg-[#2a9e84]"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- MODAL: CONFIRM (cancel appointment / logout) -->
+@if (modal() === 'cancel' || modal() === 'logout') {
+  <div
+    class="fixed inset-0 z-[200] flex items-center justify-center bg-[rgba(28,74,90,0.38)] backdrop-blur-[2px]"
+    (click)="closeModal()"
+  >
+    <div
+      class="modal-box w-[420px] max-w-[95vw] rounded-[20px] bg-white p-9 shadow-[0_16px_48px_rgba(28,74,90,0.2)]"
+      (click)="$event.stopPropagation()"
+    >
+      <h2 class="font-display mb-3 text-[22px] text-[#1c4a5a]">
+        {{ modal() === 'cancel' ? 'Cancel Appointment' : 'Logout' }}
+      </h2>
+      <p class="text-sm font-semibold text-[#1c4a5a]">
+        {{ modal() === 'cancel' ? 'Are you sure you want to cancel this appointment?' : 'Are you sure you want to log out?' }}
+      </p>
+      <div class="mt-6 flex justify-end gap-2.5">
+        <button
+          type="button"
+          (click)="closeModal()"
+          class="font-display rounded-full border-2 border-[#3abfa0] bg-white px-8 py-3 text-[15px] text-[#1c4a5a] transition hover:bg-[#3abfa0] hover:text-white"
+        >
+          No
+        </button>
+        <button
+          type="button"
+          (click)="modal() === 'cancel' ? confirmCancel() : logout()"
+          class="font-display rounded-full border-2 border-[#3abfa0] bg-[#3abfa0] px-8 py-3 text-[15px] text-white transition hover:bg-[#2a9e84]"
+        >
+          <a routerLink="/home" class="block h-full w-full text-center">Yes</a>
+        </button>
+      </div>
+    </div>
+  </div>
+}
