@@ -1,0 +1,88 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Fredoka+One&display=swap');
+
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #eef9f6;
+  color: #1c4a5a;
+  font-family: 'Nunito', sans-serif;
+}
+
+/* Heading font */
+.font-display {
+  font-family: 'Fredoka One', cursive;
+}
+
+/* Active sidebar link (routerLinkActive) */
+.active-link {
+  background: #e6f9f5;
+  border-left-color: #3abfa0;
+  color: #2a9e84;
+}
+
+/* Modal animation */
+.modal-box {
+  animation: modalIn 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Form fields */
+.field-label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #1c4a5a;
+}
+
+.field {
+  width: 100%;
+  border: 2px solid #a2dfd0;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  color: #1c4a5a;
+  background-color: #fff;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.field:focus {
+  border-color: #3abfa0;
+}
+
+.field:disabled {
+  background-color: #f5f5f5;
+  color: #aaa;
+  cursor: not-allowed;
+}
+
+/* Custom dropdown arrow */
+.select-field {
+  appearance: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%232a9e84' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #eef9f6;
+}
+::-webkit-scrollbar-thumb {
+  background: #a2dfd0;
+  border-radius: 4px;
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(24px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}

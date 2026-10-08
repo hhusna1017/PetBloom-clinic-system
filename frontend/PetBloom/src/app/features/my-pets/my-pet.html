@@ -1,0 +1,252 @@
+<!-- HEADER -->
+<header class="sticky top-0 z-50 flex items-center gap-3.5 border-b-2 border-[#a2dfd0] bg-white px-[30px] py-3.5">
+    <div class="h-12 w-12 shrink-0 overflow-hidden rounded-full bg-[#fdfdf9] ring-2 ring-[#a2dfd0]">
+      <img
+        src="petbloom-logo.jpeg"
+        alt="PetBloom logo"
+        class="h-full w-full translate-y-[3%] scale-[0.9] object-cover"
+      />
+    </div>
+  <div class="font-display text-[15px] uppercase leading-tight tracking-wide text-[#2a9e84]">
+    PetBloom<br />Veterinary
+  </div>
+  <div class="h-9 w-0.5 bg-[#a2dfd0]"></div>
+  <div class="font-display text-xl tracking-wide text-[#1c5249]">🐣 My Pets</div>
+</header>
+
+<div class="flex min-h-[calc(100vh-70px)] flex-1">
+  <!-- SIDEBAR -->
+  <aside class="flex w-60 shrink-0 flex-col border-r-2 border-[#a2dfd0] bg-white py-7">
+    <div class="px-5 pb-3 text-[10px] font-extrabold uppercase tracking-[1.5px] text-[#2a9e84]">Main Menu</div>
+    <nav class="flex flex-col gap-1">
+      @for (item of menu; track item.link) {
+        <a
+          [routerLink]="item.link"
+          routerLinkActive="active-link"
+          class="flex items-center gap-2.5 border-l-4 border-transparent px-5 py-3 text-sm font-bold text-[#1c5249] transition hover:border-[#39c0a6] hover:bg-[#e6f9f5] hover:text-[#2a9e84]"
+        >
+          {{ item.icon }} {{ item.label }}
+        </a>
+      }
+    </nav>
+    <div class="mt-auto px-5">
+      <button
+        type="button"
+        (click)="logout()"
+        class="w-full rounded-full bg-[#39c0a6] py-3 text-sm font-extrabold uppercase tracking-wider text-white transition hover:scale-[1.02] hover:bg-[#2a9e84]"
+      >
+       <a routerLink="/home" class="text-white">Logout</a>
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="flex flex-1 flex-col gap-5 bg-[#f0fbf8] px-12 py-9">
+    <div class="mx-auto flex w-full max-w-[820px] justify-end">
+      <button
+        type="button"
+        (click)="openAddModal()"
+        class="rounded-full bg-[#39c0a6] px-[26px] py-3 text-sm font-extrabold tracking-wide text-white shadow-[0_4px_14px_rgba(57,192,166,0.35)] transition hover:-translate-y-0.5 hover:bg-[#2a9e84]"
+      >
+        ➕ Add New Pet
+      </button>
+    </div>
+
+    <div class="mx-auto flex w-full max-w-[820px] flex-col gap-5">
+      @if (loading()) {
+        <div class="rounded-[20px] bg-white p-[60px] text-center font-semibold text-[#888] shadow-card">
+          Loading pets...
+        </div>
+      } @else if (pets().length > 0) {
+        @for (pet of pets(); track pet.id) {
+          <div class="pet-card flex items-center gap-[30px] rounded-[20px] bg-white px-7 py-6 shadow-card transition hover:-translate-y-[3px]">
+            <div class="flex h-[110px] w-[110px] shrink-0 items-center justify-center rounded-full border-[3px] border-[#a2dfd0] bg-[#e6f9f5] text-5xl">
+              {{ getEmoji(pet.type) }}
+            </div>
+
+            <div class="flex flex-1 flex-col gap-[7px] text-sm font-bold text-[#1c5249]">
+              <div class="flex items-baseline gap-1.5">
+                <span class="min-w-[130px] text-[13px] uppercase tracking-[0.3px] text-[#888]">Pet Name :</span>
+                {{ pet.name | uppercase }}
+              </div>
+              <div class="flex items-baseline gap-1.5">
+                <span class="min-w-[130px] text-[13px] uppercase tracking-[0.3px] text-[#888]">Type of Pet :</span>
+                {{ pet.type | uppercase }}
+              </div>
+              <div class="flex items-baseline gap-1.5">
+                <span class="min-w-[130px] text-[13px] uppercase tracking-[0.3px] text-[#888]">Breed :</span>
+                {{ pet.breed | uppercase }}
+              </div>
+              <div class="flex items-baseline gap-1.5">
+                <span class="min-w-[130px] text-[13px] uppercase tracking-[0.3px] text-[#888]">Age :</span>
+                {{ pet.age }}
+              </div>
+            </div>
+
+            <div class="flex shrink-0 flex-col gap-2.5">
+              <button
+                type="button"
+                (click)="openEditModal(pet)"
+                class="w-[110px] rounded-full border-2 border-[#39c0a6] px-[22px] py-2 text-[13px] font-extrabold tracking-wide text-[#39c0a6] transition hover:border-[#2a9e84] hover:bg-[#e6f9f5] hover:text-[#2a9e84]"
+              >
+                ✏️ Edit
+              </button>
+              <button
+                type="button"
+                (click)="openDeleteModal(pet)"
+                class="w-[110px] rounded-full border-2 border-[#ff6b6b] px-[22px] py-2 text-[13px] font-extrabold tracking-wide text-[#ff6b6b] transition hover:bg-[#fff0f0]"
+              >
+                🗑 Delete
+              </button>
+            </div>
+          </div>
+        }
+      } @else {
+        <div class="rounded-[20px] bg-white px-[30px] py-[60px] text-center text-[15px] font-semibold text-[#888] shadow-card">
+          <div class="mb-3.5 text-[56px]">🐾</div>
+          <p>No pets registered yet.</p>
+          <p class="mt-1.5 text-[13px]">Click <strong>Add New Pet</strong> above to get started!</p>
+        </div>
+      }
+    </div>
+  </main>
+</div>
+
+<!-- MODAL: ADD / EDIT PET -->
+@if (showFormModal()) {
+  <div
+    class="fixed inset-0 z-[200] flex items-center justify-center bg-[rgba(28,82,73,0.35)] backdrop-blur-[3px]"
+    (click)="closeModals()"
+  >
+    <div
+      class="modal-box w-[420px] max-w-[95vw] rounded-3xl bg-white px-9 py-8 shadow-[0_16px_48px_rgba(28,74,90,0.22)]"
+      (click)="$event.stopPropagation()"
+    >
+      <h2 class="font-display mb-[22px] text-[22px] text-[#1c5249]">
+        {{ editingId() === null ? '➕ Add New Pet' : '✏️ Edit Pet Details' }}
+      </h2>
+
+      <form (ngSubmit)="savePet()" #petForm="ngForm">
+        <div class="mb-3.5">
+          <label for="petname" class="field-label">Pet Name</label>
+          <input
+            id="petname"
+            name="petname"
+            type="text"
+            class="field"
+            placeholder="e.g. Mochi"
+            required
+            [(ngModel)]="form.name"
+          />
+        </div>
+
+        <div class="mb-3.5">
+          <label for="species" class="field-label">Type of Pet</label>
+          <select
+            id="species"
+            name="species"
+            class="field select-field"
+            required
+            [(ngModel)]="form.type"
+            (ngModelChange)="onTypeChange()"
+          >
+            <option value="" disabled>-- Select Type --</option>
+            @for (t of petTypes; track t) {
+              <option [value]="t">{{ t }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3.5">
+          <label for="breed" class="field-label">Breed</label>
+          <select
+            id="breed"
+            name="breed"
+            class="field select-field"
+            required
+            [disabled]="breedList().length === 0"
+            [(ngModel)]="form.breed"
+          >
+            <option value="" disabled>
+              {{ breedList().length === 0 ? '-- Select Type of Pet first --' : '-- Select Breed --' }}
+            </option>
+            @for (b of breedList(); track b) {
+              <option [value]="b">{{ b }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3.5">
+          <label for="age" class="field-label">Age</label>
+          <div class="flex gap-2.5">
+            <input
+              id="age"
+              name="age"
+              type="number"
+              min="0"
+              class="field flex-1"
+              placeholder="e.g. 3"
+              required
+              [(ngModel)]="form.ageValue"
+            />
+            <select name="age_unit" class="field select-field !w-[130px]" required [(ngModel)]="form.ageUnit">
+              <option value="Years">Years</option>
+              <option value="Months">Months</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mt-6 flex justify-between gap-2.5">
+          <button
+            type="button"
+            (click)="closeModals()"
+            class="rounded-full border-2 border-[#1c5249] px-6 py-2.5 text-[13px] font-extrabold text-[#1c5249] transition hover:bg-[#e6f9f5]"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            [disabled]="petForm.invalid || saving()"
+            class="rounded-full bg-[#39c0a6] px-[26px] py-2.5 text-[13px] font-extrabold text-white transition hover:-translate-y-px hover:bg-[#2a9e84] disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {{ editingId() === null ? 'Add Pet' : 'Save Changes' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+}
+
+<!-- MODAL: CONFIRM DELETE -->
+@if (petToDelete(); as pet) {
+  <div
+    class="fixed inset-0 z-[200] flex items-center justify-center bg-[rgba(28,82,73,0.35)] backdrop-blur-[3px]"
+    (click)="closeModals()"
+  >
+    <div
+      class="modal-box w-[420px] max-w-[95vw] rounded-3xl bg-white px-9 py-8 shadow-[0_16px_48px_rgba(28,74,90,0.22)]"
+      (click)="$event.stopPropagation()"
+    >
+      <h2 class="font-display mb-3 text-[22px] text-[#1c5249]">🗑 Delete Pet</h2>
+      <p class="text-sm font-semibold text-[#1c5249]">
+        Are you sure you want to remove <strong>{{ pet.name | uppercase }}</strong> from your profile?
+      </p>
+      <div class="mt-6 flex justify-between gap-2.5">
+        <button
+          type="button"
+          (click)="closeModals()"
+          class="rounded-full border-2 border-[#1c5249] px-6 py-2.5 text-[13px] font-extrabold text-[#1c5249] transition hover:bg-[#e6f9f5]"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          (click)="confirmDelete()"
+          class="rounded-full bg-[#ff6b6b] px-[26px] py-2.5 text-[13px] font-extrabold text-white transition hover:bg-[#e85a5a]"
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+}
