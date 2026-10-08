@@ -1,6 +1,9 @@
 import { Routes } from '@angular/router';
+<<<<<<< HEAD
 import { PaymentPetOwner } from './features/payment-petOwner/payment-petOwner';
 import { ProfilePetOwner } from './features/profile/profile-petOwner';
+=======
+>>>>>>> 68794e07d837f9a241efa340bd3eee514abdb9bd
 
 export const routes: Routes = [
   // 1. Halaan asal ke halaman login
