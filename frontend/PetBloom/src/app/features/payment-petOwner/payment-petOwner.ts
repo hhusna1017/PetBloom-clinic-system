@@ -2,7 +2,6 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
-
 // ============================================================
 // MODELS
 // ============================================================
@@ -44,10 +43,9 @@ declare const html2pdf: any;
   imports: [CommonModule, RouterLink, RouterLinkActive],
   templateUrl: './payment-petOwner.html',
   styleUrl: './payment-petOwner.css',
-  
 })
 export class PaymentPetOwner {
-    menu = [
+  menu = [
     { label: 'My Profile', icon: '👤', link: '/profile' },
     { label: 'My Appointments', icon: '📅', link: '/appointment' },
     { label: 'My Pets', icon: '🐾', link: '/my-pets' },
@@ -62,6 +60,7 @@ export class PaymentPetOwner {
 
   showPayModal = false;
   showReceipt = false;
+  showLogoutModal = false;
 
   selectedIds = new Set<number>();
   selectedMethod = '';
@@ -188,24 +187,32 @@ export class PaymentPetOwner {
   // Install dulu:  npm i html2pdf.js
   // ============================================================
   downloadPDF(): void {
-  html2pdf()
-    .set({
-      margin: 0.5,
-      filename: 'Resit PetBloom Clinic.pdf',
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true },
-      jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
-    })
-    .from(this.receiptContent.nativeElement)
-    .save();
-}
+    html2pdf()
+      .set({
+        margin: 0.5,
+        filename: 'Resit PetBloom Clinic.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
+      })
+      .from(this.receiptContent.nativeElement)
+      .save();
+  }
+
   // ============================================================
   // LOGOUT
   // ============================================================
-  confirmLogout(): void {
-    if (confirm('Are you sure you want to log out?')) {
-      // TODO: panggil auth service logout
-      this.router.navigate(['/home']);
-    }
+  openLogout(): void {
+    this.showLogoutModal = true;
+  }
+
+  closeLogout(): void {
+    this.showLogoutModal = false;
+  }
+
+  logout(): void {
+    // TODO: panggil auth service logout
+    this.showLogoutModal = false;
+    this.router.navigate(['/home']);
   }
 }

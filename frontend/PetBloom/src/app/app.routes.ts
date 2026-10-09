@@ -1,9 +1,11 @@
 import { Routes } from '@angular/router';
-<<<<<<< HEAD
+import { Login } from './features/login/login-petowner';
+import { AboutUs } from './features/about/about';
+import { Services } from './features/services/service';
+import { StaffLogin } from './features/staff-login/staff-login';
+import { VetLogin } from './features/vet-login/vet-login';
 import { PaymentPetOwner } from './features/payment-petOwner/payment-petOwner';
 import { ProfilePetOwner } from './features/profile/profile-petOwner';
-=======
->>>>>>> 68794e07d837f9a241efa340bd3eee514abdb9bd
 
 export const routes: Routes = [
   {
@@ -16,7 +18,14 @@ export const routes: Routes = [
   { path: 'services', component: Services },
   { path: 'staff-login', component: StaffLogin },
   { path: 'vet-login', component: VetLogin },
+  { path: 'profile', component: ProfilePetOwner },
+  { path: 'payment', component: PaymentPetOwner },
+  { path: 'appointment', loadComponent: () => import('./features/appointment/appointment').then((m) => m.AppointmentPage) },
+  { path: 'my-pets', loadComponent: () => import('./features/my-pets/my-pet').then((m) => m.MyPet) },
+  { path: 'payment-petOwner', loadComponent: () => import('./features/payment-petOwner/payment-petOwner').then((m) => m.PaymentPetOwner) },
+  { path: 'profile-petOwner', loadComponent: () => import('./features/profile/profile-petOwner').then((m) => m.ProfilePetOwner) },
   {
+
     path: 'register',
     loadComponent: () =>
       import('./features/register-petOwner/register-petOwner').then((m) => m.RegisterComponent),

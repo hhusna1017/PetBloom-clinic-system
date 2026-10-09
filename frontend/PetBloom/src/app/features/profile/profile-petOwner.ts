@@ -1,9 +1,6 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
-// TODO: bila backend siap, uncomment & guna HttpClient
-// import { HttpClient } from '@angular/common/http';
-// import { inject } from '@angular/core';
 
 export interface PetOwnerProfile {
   name: string;
@@ -11,6 +8,8 @@ export interface PetOwnerProfile {
   email: string;
   address: string;
 }
+
+type ModalType = 'edit' | 'logout' | null;
 
 @Component({
   selector: 'app-profile-pet-owner',
@@ -20,25 +19,15 @@ export interface PetOwnerProfile {
   styleUrl: './profile-petOwner.css',
 })
 export class ProfilePetOwner implements OnInit {
-   menu = [
-    { label: 'My Profile', icon: '👤', link: '/profile' },
-    { label: 'My Appointments', icon: '📅', link: '/appointment' },
-    { label: 'My Pets', icon: '🐾', link: '/my-pets' },
-    { label: 'My Payment', icon: '💳', link: '/payment' },
-  ];
-  // private http = inject(HttpClient);
-
   profile = signal<PetOwnerProfile>({ name: '', phone: '', email: '', address: '' });
   loading = signal(true);
   saving = signal(false);
-  modalOpen = signal(false);
-  logoutModalOpen = signal(false);
-  toast = signal({ show: false, message: '', success: true });
 
-  // data untuk form dalam modal
+  modal = signal<ModalType>(null);
+  notice = signal('');
+  noticeOk = signal(true);
+
   form: PetOwnerProfile = { name: '', phone: '', email: '', address: '' };
-
-  private toastTimer: any;
 
   constructor(private router: Router) {}
 
@@ -46,15 +35,8 @@ export class ProfilePetOwner implements OnInit {
     this.loadProfile();
   }
 
-  /** Ambil profile owner. Sekarang guna mock data; tukar ke API bila siap. */
   loadProfile(): void {
-    // TODO: ganti dengan API call, contoh:
-    // this.http.get<PetOwnerProfile>('/api/pet-owner/me').subscribe({
-    //   next: (data) => { this.profile.set(data); this.loading.set(false); },
-    //   error: () => { this.loading.set(false); this.showToast('❌ Failed to load profile.', false); },
-    // });
-
-    // --- MOCK DATA (buang bila API dah ada) ---
+    // TODO: ganti dengan API call bila backend siap
     setTimeout(() => {
       this.profile.set({
         name: 'WAN NURAIN BATRISYIA',
@@ -66,20 +48,28 @@ export class ProfilePetOwner implements OnInit {
     }, 300);
   }
 
+  private showNotice(msg: string, ok = true): void {
+    this.noticeOk.set(ok);
+    this.notice.set(msg);
+    setTimeout(() => this.notice.set(''), 3000);
+  }
+
+  // ── Modals ─────────────────────────────────────────────────
   openModal(): void {
     this.form = { ...this.profile() };
-    this.modalOpen.set(true);
+    this.modal.set('edit');
   }
 
   closeModal(): void {
-    this.modalOpen.set(false);
+    this.modal.set(null);
   }
 
+  // ── Edit ───────────────────────────────────────────────────
   saveProfile(): void {
     const { name, phone, email, address } = this.form;
     if (!name.trim() || !phone.trim() || !email.trim() || !address.trim()) {
-      this.showToast('⚠️ Please fill in all fields.', false);
-      return;
+      this.closeModal();
+      return this.showNotice('Please fill in all fields.', false);
     }
 
     const payload: PetOwnerProfile = {
@@ -91,44 +81,24 @@ export class ProfilePetOwner implements OnInit {
 
     this.saving.set(true);
 
-    // TODO: ganti dengan API call, contoh:
-    // this.http.put('/api/pet-owner/me', payload).subscribe({
-    //   next: () => this.onSaved(payload),
-    //   error: () => { this.saving.set(false); this.showToast('❌ Update failed. Please try again.', false); },
-    // });
-
-    // --- MOCK (buang bila API dah ada) ---
-    setTimeout(() => this.onSaved(payload), 400);
-  }
-
-  private onSaved(payload: PetOwnerProfile): void {
-    this.profile.set(payload);
-    this.saving.set(false);
-    this.closeModal();
-    this.showToast('✅ Profile updated successfully!');
+    // TODO: ganti dengan API call bila backend siap
+    setTimeout(() => {
+      this.profile.set(payload);
+      this.saving.set(false);
+      this.closeModal();
+      this.showNotice('Profile updated successfully.');
+    }, 400);
   }
 
   confirmProfile(): void {
-    this.showToast('✅ Profile confirmed!');
+    // TODO: hantar ke API bila siap
+    this.showNotice('Profile confirmed.');
   }
 
- openLogoutModal(): void {
-  this.logoutModalOpen.set(true);
-}
-
-closeLogoutModal(): void {
-  this.logoutModalOpen.set(false);
-}
-
-logout(): void {
-  if (confirm('Are you sure you want to logout?')) {
-    this.router.navigate(['/home']);
-  }
-}
-
-  showToast(message: string, success = true): void {
-    clearTimeout(this.toastTimer);
-    this.toast.set({ show: true, message, success });
-    this.toastTimer = setTimeout(() => this.toast.update((t) => ({ ...t, show: false })), 3000);
+  // ── Logout ─────────────────────────────────────────────────
+  logout(): void {
+    // TODO: clear token/session bila auth siap
+    this.closeModal();
+    this.router.navigate(['/']);
   }
 }
