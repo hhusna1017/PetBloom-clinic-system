@@ -1,12 +1,12 @@
 <!-- HEADER -->
 <header class="sticky top-0 z-50 flex items-center gap-3.5 border-b-2 border-[#a2dfd0] bg-white px-[30px] py-3.5">
-    <div class="h-12 w-12 shrink-0 overflow-hidden rounded-full bg-[#fdfdf9] ring-2 ring-[#a2dfd0]">
-      <img
-        src="petbloom-logo.jpeg"
-        alt="PetBloom logo"
-        class="h-full w-full translate-y-[3%] scale-[0.9] object-cover"
-      />
-    </div>
+  <div class="h-12 w-12 shrink-0 overflow-hidden rounded-full bg-[#fdfdf9] ring-2 ring-[#a2dfd0]">
+    <img
+      src="image/logo.png"
+      alt="PetBloom logo"
+      class="h-full w-full object-contain"
+    />
+  </div>
   <div class="font-display text-[15px] uppercase leading-tight tracking-wide text-[#2a9e84]">
     PetBloom<br />Veterinary
   </div>
@@ -32,10 +32,10 @@
     <div class="mt-auto px-5">
       <button
         type="button"
-        (click)="logout()"
+        (click)="showLogoutModal.set(true)"
         class="w-full rounded-full bg-[#39c0a6] py-3 text-sm font-extrabold uppercase tracking-wider text-white transition hover:scale-[1.02] hover:bg-[#2a9e84]"
       >
-       <a routerLink="/home" class="text-white">Logout</a>
+        Logout
       </button>
     </div>
   </aside>
@@ -245,6 +245,38 @@
           class="rounded-full bg-[#ff6b6b] px-[26px] py-2.5 text-[13px] font-extrabold text-white transition hover:bg-[#e85a5a]"
         >
           Delete
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- MODAL: LOGOUT -->
+@if (showLogoutModal()) {
+  <div
+    class="fixed inset-0 z-[200] flex items-center justify-center bg-[rgba(28,82,73,0.35)] backdrop-blur-[3px]"
+    (click)="closeModals()"
+  >
+    <div
+      class="modal-box w-[420px] max-w-[95vw] rounded-3xl bg-white px-9 py-8 shadow-[0_16px_48px_rgba(28,74,90,0.22)]"
+      (click)="$event.stopPropagation()"
+    >
+      <h2 class="font-display mb-3 text-[22px] text-[#1c5249]">Logout</h2>
+      <p class="text-sm font-semibold text-[#1c5249]">Are you sure you want to log out?</p>
+      <div class="mt-6 flex justify-end gap-2.5">
+        <button
+          type="button"
+          (click)="closeModals()"
+          class="rounded-full border-2 border-[#1c5249] px-6 py-2.5 text-[13px] font-extrabold text-[#1c5249] transition hover:bg-[#e6f9f5]"
+        >
+          No
+        </button>
+        <button
+          type="button"
+          (click)="logout()"
+          class="rounded-full bg-[#39c0a6] px-[26px] py-2.5 text-[13px] font-extrabold text-white transition hover:bg-[#2a9e84]"
+        >
+          Yes
         </button>
       </div>
     </div>

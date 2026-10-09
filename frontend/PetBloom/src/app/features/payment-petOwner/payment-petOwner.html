@@ -1,8 +1,8 @@
 <!-- ================= HEADER ================= -->
 <header class="sticky top-0 z-10 flex items-center gap-3.5 border-b-2 border-[#a2dfd0] bg-white px-6 py-2.5">
   <div class="flex items-center gap-2.5">
-    <div class="flex h-14 w-14 items-center justify-center overflow-hidden rounded-xl">
-      <img src="image/logo.png" alt="Baraqah Veterinary" class="h-full w-full object-contain" />
+    <div class="h-12 w-12 shrink-0 overflow-hidden rounded-full bg-[#fdfdf9] ring-2 ring-[#a2dfd0]">
+      <img src="image/logo.png" alt="PetBloom Logo" class="h-full w-full object-contain" />
     </div>
     <div class="font-fredoka text-sm uppercase leading-tight tracking-wide text-[#2a9e84]">
       PetBloom<br />Veterinary
@@ -21,28 +21,28 @@
       Main Menu
     </div>
     <nav class="flex flex-1 flex-col">
-  <a routerLink="/profile" routerLinkActive="!border-l-[#3abfa0] bg-[#c8f0e8] text-[#2a9e84]"
-     class="flex items-center gap-2.5 border-l-4 border-transparent px-5 py-3 text-sm font-bold transition hover:border-l-[#a2dfd0] hover:bg-[#c8f0e8]">
-    🐾 My Profile
-  </a>
-  <a routerLink="/appointments" routerLinkActive="!border-l-[#3abfa0] bg-[#c8f0e8] text-[#2a9e84]"
-     class="flex items-center gap-2.5 border-l-4 border-transparent px-5 py-3 text-sm font-bold transition hover:border-l-[#a2dfd0] hover:bg-[#c8f0e8]">
-    📅 My Appointments
-  </a>
-  <a routerLink="/pets" routerLinkActive="!border-l-[#3abfa0] bg-[#c8f0e8] text-[#2a9e84]"
-     class="flex items-center gap-2.5 border-l-4 border-transparent px-5 py-3 text-sm font-bold transition hover:border-l-[#a2dfd0] hover:bg-[#c8f0e8]">
-    🐶 My Pets
-  </a>
-  <a routerLink="/payment" routerLinkActive="!border-l-[#3abfa0] bg-[#c8f0e8] text-[#2a9e84]"
-     class="flex items-center gap-2.5 border-l-4 border-transparent px-5 py-3 text-sm font-bold transition hover:border-l-[#a2dfd0] hover:bg-[#c8f0e8]">
-    💳 My Payment
-  </a>
-</nav>
+      <a routerLink="/profile" routerLinkActive="!border-l-[#3abfa0] bg-[#c8f0e8] text-[#2a9e84]"
+         class="flex items-center gap-2.5 border-l-4 border-transparent px-5 py-3 text-sm font-bold transition hover:border-l-[#a2dfd0] hover:bg-[#c8f0e8]">
+        🐾 My Profile
+      </a>
+      <a routerLink="/appointment" routerLinkActive="!border-l-[#3abfa0] bg-[#c8f0e8] text-[#2a9e84]"
+         class="flex items-center gap-2.5 border-l-4 border-transparent px-5 py-3 text-sm font-bold transition hover:border-l-[#a2dfd0] hover:bg-[#c8f0e8]">
+        📅 My Appointments
+      </a>
+      <a routerLink="/my-pets" routerLinkActive="!border-l-[#3abfa0] bg-[#c8f0e8] text-[#2a9e84]"
+         class="flex items-center gap-2.5 border-l-4 border-transparent px-5 py-3 text-sm font-bold transition hover:border-l-[#a2dfd0] hover:bg-[#c8f0e8]">
+        🐶 My Pets
+      </a>
+      <a routerLink="/payment" routerLinkActive="!border-l-[#3abfa0] bg-[#c8f0e8] text-[#2a9e84]"
+         class="flex items-center gap-2.5 border-l-4 border-transparent px-5 py-3 text-sm font-bold transition hover:border-l-[#a2dfd0] hover:bg-[#c8f0e8]">
+        💳 My Payment
+      </a>
+    </nav>
     <div class="mt-auto px-4">
-      <button type="button" (click)="confirmLogout()"
-                class="block w-full text-center bg-[#3bbfb2] text-white font-extrabold text-[13px] tracking-widest py-2.5 rounded-full transition hover:bg-[#2aa89b] cursor-pointer">
-          LOGOUT
-        </button>
+      <button type="button" (click)="openLogout()"
+              class="block w-full text-center bg-[#3bbfb2] text-white font-extrabold text-[13px] tracking-widest py-2.5 rounded-full transition hover:bg-[#2aa89b] cursor-pointer">
+        LOGOUT
+      </button>
     </div>
   </aside>
 
@@ -225,5 +225,26 @@
             class="font-fredoka w-full rounded-xl bg-[#3abfa0] p-[13px] text-base text-white transition hover:bg-[#2a9e84]">
       Done
     </button>
+  </div>
+</div>
+
+<!-- ================= LOGOUT MODAL ================= -->
+<div *ngIf="showLogoutModal"
+     class="fixed inset-0 z-[9999] flex items-center justify-center bg-[rgba(28,74,90,0.38)] backdrop-blur-[2px]"
+     (click)="closeLogout()">
+  <div class="modal-in w-[420px] max-w-[95vw] rounded-[20px] bg-white p-9 shadow-[0_16px_48px_rgba(28,74,90,0.2)]"
+       (click)="$event.stopPropagation()">
+    <h2 class="font-fredoka mb-3 text-[22px] text-[#1c4a5a]">Logout</h2>
+    <p class="text-sm font-semibold text-[#1c4a5a]">Are you sure you want to log out?</p>
+    <div class="mt-6 flex justify-end gap-2.5">
+      <button type="button" (click)="closeLogout()"
+              class="font-fredoka rounded-full border-2 border-[#3abfa0] bg-white px-8 py-3 text-[15px] text-[#1c4a5a] transition hover:bg-[#3abfa0] hover:text-white">
+        No
+      </button>
+      <button type="button" (click)="logout()"
+              class="font-fredoka rounded-full border-2 border-[#3abfa0] bg-[#3abfa0] px-8 py-3 text-[15px] text-white transition hover:bg-[#2a9e84]">
+        Yes
+      </button>
+    </div>
   </div>
 </div>

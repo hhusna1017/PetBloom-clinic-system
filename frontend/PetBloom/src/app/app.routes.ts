@@ -1,9 +1,8 @@
 import { Routes } from '@angular/router';
-<<<<<<< HEAD
 import { PaymentPetOwner } from './features/payment-petOwner/payment-petOwner';
 import { ProfilePetOwner } from './features/profile/profile-petOwner';
-=======
->>>>>>> 68794e07d837f9a241efa340bd3eee514abdb9bd
+import { MyPet } from './features/my-pets/my-pet';
+import { AppointmentPage } from './features/appointment/appointment';
 
 export const routes: Routes = [
   // 1. Halaan asal ke halaman login
@@ -12,6 +11,8 @@ export const routes: Routes = [
   { path : 'profile', component: ProfilePetOwner },
   { path : 'payment', component: PaymentPetOwner },
 
+  { path: 'appointment', loadComponent: () => import('./features/appointment/appointment').then((m) => m.AppointmentPage) },
+  { path: 'my-pets', loadComponent: () => import('./features/my-pets/my-pet').then((m) => m.MyPet) },
   // 2. Route Login (Guna Lazy Loading supaya takkan crash)
   {
     path: 'login',
@@ -72,6 +73,12 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/payment-petOwner/payment-petOwner').then((m) => m.PaymentPetOwner)
   },
+   {
+    path: 'vet-treatment',
+    loadComponent: () =>
+      import('./features/treatment/vet-treatment').then((m) => m.VetTreatment)
+  },
+
 
   // Catch-all
   { path: '**', redirectTo: 'login' }

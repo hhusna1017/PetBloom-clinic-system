@@ -3,22 +3,18 @@
   <!-- HEADER -->
   <header class="flex items-center bg-white shadow-md h-16 sticky top-0 z-[100]">
     <div class="flex items-center gap-2.5 px-5 w-[200px] shrink-0">
-  <div class="h-12 w-12 shrink-0 overflow-hidden rounded-full bg-[#fdfdf9] ring-2 ring-[#a2dfd0]">
-   <img
-  src="/image/logo.png"
-  alt="PetBloom logo"
-  class="h-full w-full object-contain scale-110"
-/>
-  </div>
-  <div class="text-xs font-black text-[#2aa89b] leading-snug uppercase tracking-wide">
-    PetBloom<br />Clinic
-  </div>
-</div>
-    
+      <div class="h-12 w-12 shrink-0 overflow-hidden rounded-full bg-[#fdfdf9] ring-2 ring-[#a2dfd0]">
+        <img src="/image/logo.png" alt="PetBloom logo" class="h-full w-full object-contain" />
+      </div>
+      <div class="text-xs font-black text-[#2aa89b] leading-snug uppercase tracking-wide">
+        PetBloom<br />Clinic
+      </div>
+    </div>
+
     <div class="w-0.5 h-10 bg-[#c8eeea] shrink-0"></div>
-<div class="flex items-center gap-2.5 px-6 text-xl font-extrabold text-[#3bbfb2] bg-white h-full flex-1">
-  <span>👤</span> Pet Owner's Profile
-</div>
+    <div class="flex items-center gap-2.5 px-6 text-xl font-extrabold text-[#3bbfb2] bg-white h-full flex-1">
+      <span>👤</span> Pet Owner's Profile
+    </div>
   </header>
 
   <div class="flex flex-1">
@@ -45,7 +41,7 @@
         </a>
       </nav>
       <div class="mt-auto px-3.5 py-5">
-      <button type="button" (click)="logout()"
+        <button type="button" (click)="modal.set('logout')"
                 class="block w-full text-center bg-[#3bbfb2] text-white font-extrabold text-[13px] tracking-widest py-2.5 rounded-full transition hover:bg-[#2aa89b] cursor-pointer">
           LOGOUT
         </button>
@@ -54,17 +50,18 @@
 
     <!-- MAIN -->
     <main class="flex-1 flex flex-col md:flex-row items-start gap-10 px-5 py-6 md:px-12 md:py-10 bg-[#f0faf9]">
-   <div class="w-full md:w-[280px] shrink-0">
-  <div class="text-2xl font-black italic text-[#222] mb-2.5 leading-tight break-words line-clamp-2"
-       [title]="profile().name">
-    Hello {{ profile().name }}!
-  </div>
-  <img
-    src="/image/illustartion.png"
-    alt="Illustration"
-    class="w-[160px] h-[160px] md:w-[200px] md:h-[200px] rounded-full object-cover block"
-  />
-</div>
+      <div class="w-full md:w-[280px] shrink-0">
+        <div class="text-2xl font-black italic text-[#222] mb-2.5 leading-tight break-words line-clamp-2"
+             [title]="profile().name">
+          Hello {{ profile().name }}!
+        </div>
+        <img
+          src="/image/illustartion.png"
+          alt="Illustration"
+          class="w-[160px] h-[160px] md:w-[200px] md:h-[200px] rounded-full object-cover block"
+        />
+      </div>
+
       <div class="bg-white rounded-[18px] px-9 py-8 flex-1 min-w-0 w-full shadow-[0_4px_20px_rgba(0,0,0,0.08)]">
         @if (loading()) {
           <p class="text-[#777] font-semibold">Loading...</p>
@@ -86,7 +83,7 @@
             <div class="text-[15px] font-semibold text-[#444]">{{ profile().address }}</div>
           </div>
 
-          <div class="flex gap-3.5 mt-7">
+          <div class="flex items-center gap-3.5 mt-7">
             <button type="button" (click)="openModal()"
                     class="px-8 py-[9px] rounded-full text-sm font-extrabold tracking-wide border-2 border-[#2aa89b] bg-white text-[#2aa89b] transition hover:bg-[#e0f7f5] cursor-pointer">
               Edit
@@ -95,14 +92,19 @@
                     class="px-8 py-[9px] rounded-full text-sm font-extrabold tracking-wide border-2 border-[#3bbfb2] bg-[#3bbfb2] text-white transition hover:bg-[#2aa89b] hover:border-[#2aa89b] cursor-pointer">
               Confirm
             </button>
+            @if (notice()) {
+              <span class="text-sm font-bold"
+                    [class.text-[#2a9e84]]="noticeOk()"
+                    [class.text-[#842029]]="!noticeOk()">{{ notice() }}</span>
+            }
           </div>
         }
       </div>
     </main>
   </div>
 
-  <!-- EDIT MODAL -->
-  @if (modalOpen()) {
+  <!-- MODAL: EDIT PROFILE -->
+  @if (modal() === 'edit') {
     <div class="fixed inset-0 bg-black/35 z-[200] flex items-center justify-center" (click)="closeModal()">
       <div class="animate-slide-up bg-white rounded-[18px] px-10 py-9 w-[420px] max-w-[95vw] shadow-[0_12px_40px_rgba(0,0,0,0.18)]"
            (click)="$event.stopPropagation()">
@@ -111,22 +113,22 @@
         <div class="mb-4">
           <label class="block text-xs font-extrabold uppercase tracking-wide mb-1.5 text-[#444]">Full Name</label>
           <input type="text" [(ngModel)]="form.name"
-       class="w-full px-4 py-2.5 border-[1.5px] border-[#d0e8e6] rounded-full text-sm text-[#222] bg-white outline-none transition focus:border-[#3bbfb2]" />
+                 class="w-full px-4 py-2.5 border-[1.5px] border-[#d0e8e6] rounded-full text-sm text-[#222] bg-white outline-none transition focus:border-[#3bbfb2]" />
         </div>
         <div class="mb-4">
           <label class="block text-xs font-extrabold uppercase tracking-wide mb-1.5 text-[#444]">Phone Number</label>
-         <input type="text" [(ngModel)]="form.phone"
-       class="w-full px-4 py-2.5 border-[1.5px] border-[#d0e8e6] rounded-full text-sm text-[#222] bg-white outline-none transition focus:border-[#3bbfb2]" />
+          <input type="text" [(ngModel)]="form.phone"
+                 class="w-full px-4 py-2.5 border-[1.5px] border-[#d0e8e6] rounded-full text-sm text-[#222] bg-white outline-none transition focus:border-[#3bbfb2]" />
         </div>
         <div class="mb-4">
           <label class="block text-xs font-extrabold uppercase tracking-wide mb-1.5 text-[#444]">Email</label>
-         <input type="text" [(ngModel)]="form.email"
-       class="w-full px-4 py-2.5 border-[1.5px] border-[#d0e8e6] rounded-full text-sm text-[#222] bg-white outline-none transition focus:border-[#3bbfb2]" />
+          <input type="text" [(ngModel)]="form.email"
+                 class="w-full px-4 py-2.5 border-[1.5px] border-[#d0e8e6] rounded-full text-sm text-[#222] bg-white outline-none transition focus:border-[#3bbfb2]" />
         </div>
         <div class="mb-4">
           <label class="block text-xs font-extrabold uppercase tracking-wide mb-1.5 text-[#444]">Address</label>
           <input type="text" [(ngModel)]="form.address"
-       class="w-full px-4 py-2.5 border-[1.5px] border-[#d0e8e6] rounded-full text-sm text-[#222] bg-white outline-none transition focus:border-[#3bbfb2]" />
+                 class="w-full px-4 py-2.5 border-[1.5px] border-[#d0e8e6] rounded-full text-sm text-[#222] bg-white outline-none transition focus:border-[#3bbfb2]" />
         </div>
 
         <div class="flex justify-end gap-3 mt-6">
@@ -143,11 +145,26 @@
     </div>
   }
 
-  <!-- TOAST -->
-  <div class="fixed bottom-[30px] right-[30px] text-white px-6 py-3 rounded-xl font-bold text-sm shadow-[0_6px_20px_rgba(0,0,0,0.15)] transition-all duration-300 z-[999] pointer-events-none"
-       [class.opacity-100]="toast().show" [class.translate-y-0]="toast().show"
-       [class.opacity-0]="!toast().show" [class.translate-y-2.5]="!toast().show"
-       [class.bg-[#2aa89b]]="toast().success" [class.bg-[#e55]]="!toast().success">
-    {{ toast().message }}
-  </div>
+  <!-- MODAL: LOGOUT -->
+  @if (modal() === 'logout') {
+    <div class="fixed inset-0 z-[200] flex items-center justify-center bg-[rgba(28,74,90,0.38)] backdrop-blur-[2px]"
+         (click)="closeModal()">
+      <div class="w-[420px] max-w-[95vw] rounded-[20px] bg-white p-9 shadow-[0_16px_48px_rgba(28,74,90,0.2)]"
+           (click)="$event.stopPropagation()">
+        <h2 class="mb-3 text-[22px] font-extrabold text-[#1c4a5a]">Logout</h2>
+        <p class="text-sm font-semibold text-[#1c4a5a]">Are you sure you want to log out?</p>
+        <div class="mt-6 flex justify-end gap-2.5">
+          <button type="button" (click)="closeModal()"
+                  class="rounded-full border-2 border-[#3abfa0] bg-white px-8 py-3 text-[15px] text-[#1c4a5a] transition hover:bg-[#3abfa0] hover:text-white">
+            No
+          </button>
+          <button type="button" (click)="logout()"
+                  class="rounded-full border-2 border-[#3abfa0] bg-[#3abfa0] px-8 py-3 text-[15px] text-white transition hover:bg-[#2a9e84]">
+            Yes
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
 </div>

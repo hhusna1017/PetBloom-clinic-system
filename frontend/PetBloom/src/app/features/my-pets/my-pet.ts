@@ -1,7 +1,7 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { UpperCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 export interface Pet {
   id: number;
@@ -34,7 +34,7 @@ export class MyPet implements OnInit {
     { label: 'My Profile', icon: '👤', link: '/profile' },
     { label: 'My Appointments', icon: '📅', link: '/appointment' },
     { label: 'My Pets', icon: '🐾', link: '/my-pets' },
-    { label: 'My Payment', icon: '💳', link: '/payments' },
+    { label: 'My Payment', icon: '💳', link: '/payment' },
   ];
 
   // ── Dropdown data ──────────────────────────────────────────
@@ -54,14 +54,14 @@ export class MyPet implements OnInit {
   saving = signal(false);
 
   showFormModal = signal(false);
+  showLogoutModal = signal(false);
   editingId = signal<number | null>(null); // null = add mode
   petToDelete = signal<Pet | null>(null);
   breedList = signal<string[]>([]);
 
   form: PetForm = { ...EMPTY_FORM };
 
-  // TODO: bila backend siap, inject PetService (HttpClient) kat sini
-  // constructor(private petService: PetService) {}
+  constructor(private router: Router) {}
 
   ngOnInit(): void {
     this.loadPets();
@@ -130,6 +130,7 @@ export class MyPet implements OnInit {
 
   closeModals(): void {
     this.showFormModal.set(false);
+    this.showLogoutModal.set(false);
     this.petToDelete.set(null);
   }
 
@@ -180,7 +181,8 @@ export class MyPet implements OnInit {
 
   // ── Logout ─────────────────────────────────────────────────
   logout(): void {
-    // TODO: clear token/session + navigate ke landing page bila auth siap
-    console.log('logout clicked');
+    // TODO: clear token/session bila auth siap
+    this.closeModals();
+    this.router.navigate(['/home']);
   }
 }

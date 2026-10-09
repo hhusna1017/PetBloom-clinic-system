@@ -1,6 +1,6 @@
 import { Component, OnInit, computed, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import {Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 type Specialization = 'General Practice' | 'Surgery' | 'Dermatology' | '';
 type ModalType = 'book' | 'view' | 'cancel' | 'logout' | null;
@@ -55,12 +55,14 @@ const EMPTY_FORM: BookForm = { date: '', time: '', petId: null, treatmentName: '
   styleUrl: './appointment.css',
 })
 export class AppointmentPage implements OnInit {
+  constructor(private router: Router) {}
+
   // ── Sidebar ────────────────────────────────────────────────
   menu = [
     { label: 'My Profile', icon: '👤', link: '/profile' },
     { label: 'My Appointments', icon: '📅', link: '/appointment' },
     { label: 'My Pets', icon: '🐾', link: '/my-pets' },
-    { label: 'My Payment', icon: '💳', link: '/payments' },
+    { label: 'My Payment', icon: '💳', link: '/payment' },
   ];
 
   headers = ['Select', 'Date', 'Time', 'Pet', 'Treatment Name', 'Treatment Cost', 'Payment', 'Veterinarian', 'Status'];
@@ -338,10 +340,10 @@ export class AppointmentPage implements OnInit {
     this.closeModal();
   }
 
-  // ── Logout ─────────────────────────────────────────────────
+   // ── Logout ─────────────────────────────────────────────────
   logout(): void {
-    // TODO: clear token/session + navigate ke landing page bila auth siap
-    console.log('logout clicked');
+    // TODO: clear token/session bila auth siap
     this.closeModal();
+    this.router.navigate(['/home']);
   }
 }
