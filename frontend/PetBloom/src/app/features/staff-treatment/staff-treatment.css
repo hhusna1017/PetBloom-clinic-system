@@ -1,0 +1,111 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+
+:host {
+  display: block;
+  font-family: 'Nunito', sans-serif;
+}
+
+/* ── Sidebar ── */
+.side-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 15px;
+  margin-right: 10px;
+  color: #004d61;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-decoration: none;
+  border-radius: 0 20px 20px 0;
+  transition: background 0.2s;
+}
+
+.side-link:hover,
+.side-link.active {
+  background: #ffffff;
+  color: #007a87;
+}
+
+/* ── Buttons ── */
+:host ::ng-deep .btn-teal.p-button {
+  background: #2ecc8e;
+  border-color: #2ecc8e;
+  color: #fff;
+  font-weight: 700;
+}
+
+:host ::ng-deep .btn-teal.p-button:hover {
+  background: #007a87;
+  border-color: #007a87;
+}
+
+:host ::ng-deep .logout-btn.p-button {
+  background: #fff;
+  border-color: #fff;
+  color: #004d61;
+  font-weight: 900;
+  justify-content: center;
+}
+
+:host ::ng-deep .logout-btn.p-button:hover {
+  background: #e0f7f4;
+  border-color: #e0f7f4;
+}
+
+/* ── Table (yellow header, cream rows) ── */
+:host ::ng-deep .treatment-table .p-datatable-thead > tr > th {
+  background: #f9c97c;
+  color: #004d61;
+  font-size: 13px;
+  font-weight: 800;
+  padding: 13px 16px;
+}
+
+:host ::ng-deep .treatment-table .p-datatable-tbody > tr > td {
+  background: #fef3e2;
+  color: #2a4a38;
+  font-size: 13px;
+  padding: 12px 16px;
+  border: none;
+}
+
+:host ::ng-deep .treatment-table .p-datatable-tbody > tr:nth-child(even) > td {
+  background: #fff9f0;
+}
+
+:host ::ng-deep .treatment-table .p-datatable-tbody > tr:hover > td {
+  background: #fde8c8;
+}
+
+/* ── Dialog form ── */
+.field-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.cost-display {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1.5px solid #2ecc8e;
+  border-radius: 8px;
+  background: #f0fbf8;
+  color: #004d61;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.cost-display span {
+  color: #007a87;
+  font-size: 15px;
+}
+
+:host ::ng-deep .p-dialog-title {
+  color: #007a87;
+  font-size: 18px;
+  font-weight: 800;
+}

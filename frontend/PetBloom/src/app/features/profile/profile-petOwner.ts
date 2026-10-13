@@ -99,6 +99,6 @@ export class ProfilePetOwner implements OnInit {
   logout(): void {
     // TODO: clear token/session bila auth siap
     this.closeModal();
-    this.router.navigate(['/home']);
+    this.router.navigate(['/']);
   }
 }

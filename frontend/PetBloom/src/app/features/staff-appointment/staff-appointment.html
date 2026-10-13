@@ -1,0 +1,158 @@
+<p-toast position="top-right" />
+<p-confirmdialog />
+
+<div class="flex min-h-screen bg-[#f0faf9]">
+
+  <!-- ── Sidebar ── -->
+  <aside class="sidebar fixed top-0 left-0 h-screen w-[180px] flex flex-col py-5 bg-[#a8e6e1]">
+    <div class="flex items-center gap-2.5 px-4 pt-2.5 pb-6 mb-4 border-b border-[#7dd4ce]">
+      <div class="h-12 w-12 shrink-0 overflow-hidden rounded-full bg-[#fdfdf9] ring-2 ring-[#a2dfd0]">
+    <img
+      src="image/logo.png"
+      alt="PetBloom logo"
+      class="h-full w-full object-contain"
+    />
+    </div>
+      <div class="text-[11px] font-black leading-tight tracking-wide text-[#004d61]">
+        PetBloom<br />VETERINARY
+      </div>
+    </div>
+
+    <div class="px-4 pt-2 pb-1 mt-1 text-[10px] font-bold uppercase tracking-widest text-[#004d61]">
+      Main Menu
+    </div>
+
+    <a routerLink="/staff-dashboard" routerLinkActive="active" class="side-link"><i class="pi pi-home"></i> Dashboard</a>
+    <a routerLink="/staff-appointment" routerLinkActive="active" class="side-link"><i class="pi pi-calendar"></i> Appointment</a>
+    <a routerLink="/staff-ownerpet" routerLinkActive="active" class="side-link"><i class="pi pi-heart"></i> Pet Owner</a>
+    <a routerLink="/staff-treatment" routerLinkActive="active" class="side-link"><i class="pi pi-wrench"></i> Treatment</a>
+    <a routerLink="/staff-payment" routerLinkActive="active" class="side-link"><i class="pi pi-credit-card"></i> Payment</a>
+
+    <div class="mt-auto p-4">
+      <p-button label="LOGOUT" styleClass="w-full logout-btn" (onClick)="confirmLogout()" />
+    </div>
+  </aside>
+
+  <!-- ── Main content ── -->
+  <main class="flex-1 ml-[180px] p-8 flex flex-col">
+    <h1 class="text-[26px] font-black uppercase tracking-wide text-[#004d61] mb-6 pb-3 border-b-2 border-[#a8e6e1]">
+      Appointment Management
+    </h1>
+
+    <div class="flex justify-end mb-5">
+      <p-button label="Add Appointment" icon="pi pi-plus" rounded (onClick)="openAddDialog()" styleClass="btn-teal" />
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-md">
+      <p-table
+        [value]="appointments()"
+        [loading]="loading()"
+        [paginator]="true"
+        [rows]="10"
+        [rowsPerPageOptions]="[10, 25, 50]"
+        [rowHover]="true"
+        styleClass="appt-table"
+      >
+        <ng-template #header>
+          <tr>
+            <th class="text-center">Appt ID</th>
+            <th class="text-center">Date</th>
+            <th class="text-center">Time</th>
+            <th class="text-center">Pet ID</th>
+            <th class="text-center">Pet Name</th>
+            <th class="text-center">Owner ID</th>
+            <th class="text-center">Vet ID</th>
+            <th class="text-center">Staff ID</th>
+            <th class="text-center">Status</th>
+            <th class="text-center">Action</th>
+          </tr>
+        </ng-template>
+
+        <ng-template #body let-row>
+          <tr>
+            <td class="text-center">{{ row.appointmentId }}</td>
+            <td class="text-center">{{ row.date | date: 'dd/MM/yyyy' }}</td>
+            <td class="text-center">{{ formatTime(row.time) }}</td>
+            <td class="text-center">{{ row.petId }}</td>
+            <td class="text-center">{{ row.petName || 'N/A' }}</td>
+            <td class="text-center">{{ row.ownerId }}</td>
+            <td class="text-center">{{ row.vetId ?? '-' }}</td>
+            <td class="text-center">{{ row.staffId ?? '-' }}</td>
+            <td class="text-center">
+              <p-tag [value]="row.status" [severity]="statusSeverity(row.status)" [rounded]="true" />
+            </td>
+            <td class="text-center whitespace-nowrap">
+              <p-button label="Edit" size="small" styleClass="btn-teal mr-1" (onClick)="openEditDialog(row)" />
+              <p-button label="Del" size="small" severity="danger" (onClick)="confirmDelete(row)" />
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template #emptymessage>
+          <tr>
+            <td colspan="10" class="text-center italic text-gray-500 py-8">No appointments found.</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </main>
+</div>
+
+<!-- ── Add / Edit Dialog ── -->
+<p-dialog
+  [(visible)]="dialogVisible"
+  [modal]="true"
+  [draggable]="false"
+  [style]="{ width: '480px' }"
+  [breakpoints]="{ '640px': '95vw' }"
+  [header]="editingId() ? '✏️ Edit Appointment' : '📅 Add Appointment'"
+>
+  <form [formGroup]="form" (ngSubmit)="save()" class="grid grid-cols-2 gap-3">
+
+    <div class="flex flex-col gap-1">
+      <label class="field-label">Pet ID</label>
+      <p-inputnumber formControlName="petId" [useGrouping]="false" placeholder="e.g. 1"
+                     (onInput)="onPetIdChange($event.value)" styleClass="w-full" inputStyleClass="w-full" />
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <label class="field-label">Pet Name (auto-filled)</label>
+      <input pInputText type="text" [value]="petName()" disabled placeholder="Auto from Pet ID" class="w-full" />
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <label class="field-label">Owner ID</label>
+      <p-inputnumber formControlName="ownerId" [useGrouping]="false" placeholder="e.g. 1"
+                     styleClass="w-full" inputStyleClass="w-full" />
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <label class="field-label">Veterinarian ID</label>
+      <p-inputnumber formControlName="vetId" [useGrouping]="false" placeholder="e.g. 1"
+                     styleClass="w-full" inputStyleClass="w-full" />
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <label class="field-label">Appointment Date</label>
+      <p-datepicker formControlName="date" dateFormat="dd/mm/yy" [showIcon]="true" appendTo="body" styleClass="w-full" />
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <label class="field-label">Appointment Time</label>
+      <p-datepicker formControlName="time" [timeOnly]="true" hourFormat="12" [showIcon]="true"
+                    icon="pi pi-clock" appendTo="body" styleClass="w-full" />
+    </div>
+
+    <div class="flex flex-col gap-1 col-span-2">
+      <label class="field-label">Status</label>
+      <p-select formControlName="status" [options]="statusOptions" optionLabel="label" optionValue="value"
+                appendTo="body" styleClass="w-full" />
+    </div>
+
+    <div class="col-span-2 flex justify-end gap-2 mt-4">
+      <p-button type="button" label="Cancel" severity="secondary" [outlined]="true" (onClick)="dialogVisible = false" />
+      <p-button type="submit" [label]="editingId() ? 'Save Changes' : 'Save Appointment'"
+                [disabled]="form.invalid" [loading]="saving()" styleClass="btn-teal" />
+    </div>
+  </form>
+</p-dialog>
