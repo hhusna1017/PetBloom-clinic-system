@@ -405,7 +405,7 @@ export class VetTreatment {
   confirmLogout(): void {
     // TODO: panggil AuthService.logout() / buang token (localStorage / sessionStorage) bila backend siap
     this.showLogoutModal.set(false);
-    this.router.navigate(['/vet-login']);
+    this.router.navigate(['/home']);
   }
 
   totalBilled(h: TreatmentHistory): number {

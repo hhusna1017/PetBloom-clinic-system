@@ -1,0 +1,336 @@
+<div class="flex min-h-screen bg-[#a8e6e1] font-sans">
+
+  <!-- Sidebar -->
+  <aside class="fixed left-0 top-0 z-100 flex h-screen w-[180px] flex-col bg-white py-5 shadow-md max-md:static max-md:h-auto max-md:w-full max-md:flex-row max-md:flex-wrap">
+    <div class="mb-4 flex items-center gap-2.5 border-b border-[#a8e6e1] px-4 pb-6 pt-2.5">
+      <img [src]="logoUrl" alt="PetBloom Veterinary logo" class="h-10 w-10 rounded-lg object-contain" />
+      <div class="text-[11px] font-black leading-tight tracking-wide text-[#004d61]">
+        PetBloom<br />VETERINARY
+      </div>
+    </div>
+
+    <div class="mt-1 px-4 pb-1 pt-2 text-[10px] font-bold uppercase tracking-widest text-[#004d61]">
+      Main Menu
+    </div>
+
+    @for (item of menuItems; track item.path) {
+      <a
+        [routerLink]="item.path"
+        routerLinkActive="!bg-[#a8e6e1] !text-[#004d61]"
+        class="mr-2.5 flex items-center gap-2 rounded-r-[20px] px-4 py-2.5 text-[13px] font-bold uppercase tracking-wide text-[#004d61] no-underline transition-colors hover:bg-[#d6f5f0] hover:text-[#007a87]"
+      >
+        <span>{{ item.icon }}</span> {{ item.label }}
+      </a>
+    }
+
+    <!-- Logout button -->
+    <div class="mt-auto p-4 max-md:mt-0 max-md:w-full">
+      <button
+        type="button"
+        (click)="openLogout()"
+        class="block w-full cursor-pointer rounded-[20px] border-none bg-[#a8e6e1] p-2.5 text-center text-[13px] font-black uppercase tracking-wide text-[#004d61] transition-colors hover:bg-[#7dd4ce]"
+      >
+        LOGOUT
+      </button>
+    </div>
+
+    <!-- Logout modal -->
+    @if (showLogoutModal) {
+      <div class="fixed inset-0 z-[9999] flex items-center justify-center bg-[rgba(28,74,90,0.38)] backdrop-blur-[2px]"
+           (click)="closeLogout()">
+        <div class="modal-pop w-[420px] max-w-[95vw] rounded-[20px] bg-white p-9 shadow-[0_16px_48px_rgba(28,74,90,0.2)]"
+             (click)="$event.stopPropagation()">
+          <h2 class="font-fredoka mb-3 text-[22px] text-[#1c4a5a]">Logout</h2>
+          <p class="text-sm font-semibold text-[#1c4a5a]">Are you sure you want to log out?</p>
+          <div class="mt-6 flex justify-end gap-2.5">
+            <button type="button" (click)="closeLogout()"
+                    class="font-fredoka rounded-full border-2 border-[#3abfa0] bg-white px-8 py-3 text-[15px] text-[#1c4a5a] transition hover:bg-[#3abfa0] hover:text-white">
+              No
+            </button>
+            <button type="button" (click)="logout()"
+                    class="font-fredoka rounded-full border-2 border-[#3abfa0] bg-[#3abfa0] px-8 py-3 text-[15px] text-white transition hover:bg-[#2a9e84]">
+              Yes
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+  </aside>
+
+  <!-- Main content -->
+  <main class="ml-[180px] flex flex-1 flex-col p-[30px] max-md:ml-0 max-md:p-5">
+    <h1 class="mb-6 border-b-2 border-[#7dd4ce] pb-3 text-[26px] font-black uppercase tracking-wider text-[#004d61]">
+      Pet &amp; Owner Management
+    </h1>
+
+    <!-- Message banner -->
+    @if (message) {
+      <div
+        id="page-message"
+        class="mb-5 flex items-start justify-between gap-2.5 rounded-xl border px-5 py-3.5 text-sm font-semibold leading-relaxed"
+        [ngClass]="message.type === 'error'
+          ? 'border-[#e05252] bg-[#fdeaea] text-[#991b1b]'
+          : 'border-[#4caf50] bg-[#e6f7e9] text-[#1e6b2b]'"
+      >
+        <div class="flex-1">
+          {{ message.text }}
+
+          @if (message.type === 'error' && message.showSteps) {
+            <div class="mt-2.5 rounded-lg bg-white/60 px-3.5 py-2.5 text-[13px]">
+              <strong>📋 Delete order (step by step):</strong>
+              <ol class="ml-[18px] mt-1.5 list-decimal">
+                <li class="mb-1">Delete their <a routerLink="/staff/payment" class="font-bold underline">payments</a> first</li>
+                <li class="mb-1">Then delete their <a routerLink="/staff/treatment" class="font-bold underline">treatment records</a></li>
+                <li class="mb-1">Then delete their <a routerLink="/staff/appointment" class="font-bold underline">appointments</a></li>
+                <li class="mb-1">
+                  Then delete their
+                  <button type="button" (click)="scrollToPets()" class="cursor-pointer font-bold underline">pets (below)</button>
+                </li>
+                <li class="mb-1">Finally delete the owner ✅</li>
+              </ol>
+            </div>
+          }
+        </div>
+        <button
+          type="button"
+          (click)="message = null"
+          class="-mt-0.5 shrink-0 cursor-pointer text-xl font-black text-inherit"
+        >
+          &times;
+        </button>
+      </div>
+    }
+
+    <!-- ── OWNERS ── -->
+    <section class="mb-10" id="section-owners">
+      <div class="mb-4 flex items-center justify-between">
+        <h2 class="text-base font-black uppercase tracking-wide text-[#007a87]">Owners</h2>
+        <button
+          type="button"
+          (click)="openAddOwner()"
+          class="cursor-pointer rounded-[20px] bg-[#007a87] px-6 py-2.5 text-sm font-bold text-white transition hover:-translate-y-px hover:bg-[#004d61]"
+        >
+          + Add Owner
+        </button>
+      </div>
+
+      <div class="overflow-x-auto rounded-2xl bg-white shadow-md">
+        <table class="w-full border-collapse">
+          <thead>
+            <tr class="bg-[#f5c842]">
+              @for (h of ownerHeaders; track h) {
+                <th [class]="thClass">{{ h }}</th>
+              }
+            </tr>
+          </thead>
+          <tbody>
+            @if (loading) {
+              <tr><td colspan="6" class="p-8 text-center text-sm italic text-gray-500">Loading...</td></tr>
+            } @else {
+              @for (o of owners; track o.id) {
+                <tr [class]="trClass">
+                  <td [class]="tdClass">{{ o.id }}</td>
+                  <td [class]="tdClass">{{ o.name }}</td>
+                  <td [class]="tdClass">{{ o.phone }}</td>
+                  <td [class]="tdClass">{{ o.email }}</td>
+                  <td [class]="tdClass">{{ o.address || '-' }}</td>
+                  <td [class]="tdClass">
+                    <div class="flex justify-center gap-1.5">
+                      <button type="button" (click)="openEditOwner(o)" [class]="btnEditClass">Edit</button>
+                      <button type="button" (click)="deleteOwner(o)" [class]="btnDelClass">Del</button>
+                    </div>
+                  </td>
+                </tr>
+              } @empty {
+                <tr><td colspan="6" class="p-8 text-center text-sm italic text-gray-500">No owners registered yet.</td></tr>
+              }
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ── PETS ── -->
+    <section class="mb-10" id="section-pets">
+      <div class="mb-4 flex items-center justify-between">
+        <h2 class="text-base font-black uppercase tracking-wide text-[#007a87]">Pets</h2>
+        <button
+          type="button"
+          (click)="openAddPet()"
+          class="cursor-pointer rounded-[20px] bg-[#007a87] px-6 py-2.5 text-sm font-bold text-white transition hover:-translate-y-px hover:bg-[#004d61]"
+        >
+          + Add Pet
+        </button>
+      </div>
+
+      <div class="overflow-x-auto rounded-2xl bg-white shadow-md">
+        <table class="w-full border-collapse">
+          <thead>
+            <tr class="bg-[#f5c842]">
+              @for (h of petHeaders; track h) {
+                <th [class]="thClass">{{ h }}</th>
+              }
+            </tr>
+          </thead>
+          <tbody>
+            @if (loading) {
+              <tr><td colspan="7" class="p-8 text-center text-sm italic text-gray-500">Loading...</td></tr>
+            } @else {
+              @for (p of pets; track p.id) {
+                <tr [class]="trClass">
+                  <td [class]="tdClass">{{ p.id }}</td>
+                  <td [class]="tdClass">{{ p.name }}</td>
+                  <td [class]="tdClass">{{ p.type }}</td>
+                  <td [class]="tdClass">{{ p.breed || '-' }}</td>
+                  <td [class]="tdClass">{{ p.age }}</td>
+                  <td [class]="tdClass">{{ p.ownerId }} — {{ ownerName(p.ownerId) }}</td>
+                  <td [class]="tdClass">
+                    <div class="flex justify-center gap-1.5">
+                      <button type="button" (click)="openEditPet(p)" [class]="btnEditClass">Edit</button>
+                      <button type="button" (click)="deletePet(p)" [class]="btnDelClass">Del</button>
+                    </div>
+                  </td>
+                </tr>
+              } @empty {
+                <tr><td colspan="7" class="p-8 text-center text-sm italic text-gray-500">No pets registered yet.</td></tr>
+              }
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- ── MODAL (add/edit owner & pet) ── -->
+@if (modal) {
+  <div
+    class="fixed inset-0 z-[9999] flex items-center justify-center bg-[#004d61]/40"
+    (click)="closeModal()"
+  >
+    <div
+      class="max-h-[95vh] w-[440px] max-w-[95vw] overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="mb-5 flex items-center justify-between border-b-2 border-[#a8e6e1] pb-2.5">
+        <h2 class="text-lg font-black text-[#004d61]">
+          @switch (modal) {
+            @case ('add-owner') { ➕ Add New Owner }
+            @case ('edit-owner') { ✏️ Edit Owner }
+            @case ('add-pet') { ➕ Add New Pet }
+            @case ('edit-pet') { ✏️ Edit Pet }
+          }
+        </h2>
+        <button
+          type="button"
+          (click)="closeModal()"
+          class="cursor-pointer text-2xl text-gray-400 hover:text-gray-800"
+        >
+          &times;
+        </button>
+      </div>
+
+      <!-- OWNER FORM -->
+      @if (modal === 'add-owner' || modal === 'edit-owner') {
+        <form (ngSubmit)="saveOwner()">
+          <div class="mb-3.5 flex flex-col gap-1">
+            <label [class]="labelClass">Full Name</label>
+            <input type="text" name="name" required placeholder="e.g. Ali Hassan" [(ngModel)]="ownerForm.name" [class]="inputClass" />
+          </div>
+          <div class="mb-3.5 flex flex-col gap-1">
+            <label [class]="labelClass">Phone Number</label>
+            <input type="text" name="phone" required placeholder="e.g. 012-3456789" [(ngModel)]="ownerForm.phone" [class]="inputClass" />
+          </div>
+          <div class="mb-3.5 flex flex-col gap-1">
+            <label [class]="labelClass">Email</label>
+            <input type="email" name="email" required placeholder="e.g. ali@email.com" [(ngModel)]="ownerForm.email" [class]="inputClass" />
+          </div>
+          <div class="mb-3.5 flex flex-col gap-1">
+            <label [class]="labelClass">Address</label>
+            <input type="text" name="address" placeholder="e.g. No 12, Jalan Maju" [(ngModel)]="ownerForm.address" [class]="inputClass" />
+          </div>
+
+          @if (modal === 'add-owner') {
+            <div class="mb-3.5 flex flex-col gap-1">
+              <label [class]="labelClass">Password (for owner login)</label>
+              <input type="password" name="password" required placeholder="Set a login password" [(ngModel)]="ownerForm.password" [class]="inputClass" />
+            </div>
+          }
+
+          <div class="mt-5 flex justify-end gap-2">
+            <button type="button" (click)="closeModal()" [class]="btnCancelClass">Cancel</button>
+            <button type="submit" [class]="btnSubmitClass">
+              {{ modal === 'add-owner' ? 'Save Owner' : 'Update Owner' }}
+            </button>
+          </div>
+        </form>
+      }
+
+      <!-- PET FORM -->
+      @if (modal === 'add-pet' || modal === 'edit-pet') {
+        <form (ngSubmit)="savePet()">
+          <div class="mb-3.5 flex flex-col gap-1">
+            <label [class]="labelClass">Pet Name</label>
+            <input type="text" name="petName" required placeholder="e.g. Mochi" [(ngModel)]="petForm.name" [class]="inputClass" />
+          </div>
+
+          <div class="mb-3.5 flex flex-col gap-1">
+            <label [class]="labelClass">Type / Species</label>
+            <select name="petType" required [(ngModel)]="petForm.type" [class]="inputClass">
+              <option value="">-- Select Type --</option>
+              @for (t of petTypes; track t) {
+                <option [value]="t">{{ t }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="mb-3.5 flex flex-col gap-1">
+            <label [class]="labelClass">Breed</label>
+            <input type="text" name="breed" placeholder="e.g. Persian, Husky" [(ngModel)]="petForm.breed" [class]="inputClass" />
+          </div>
+
+          <div class="mb-3.5 flex flex-col gap-1">
+            <label [class]="labelClass">Age</label>
+            <div class="flex items-stretch gap-2">
+              <input
+                type="number"
+                name="ageNum"
+                min="0"
+                max="99"
+                required
+                placeholder="e.g. 3"
+                [(ngModel)]="petForm.ageNum"
+                class="min-w-0 basis-[38%] rounded-lg border-2 border-[#a8e6e1] px-3 py-2 text-[13px] text-gray-700 outline-none focus:border-[#007a87]"
+              />
+              <select
+                name="ageUnit"
+                [(ngModel)]="petForm.ageUnit"
+                class="min-w-0 flex-1 rounded-lg border-2 border-[#a8e6e1] px-3 py-2 text-[13px] text-gray-700 outline-none focus:border-[#007a87]"
+              >
+                <option value="year">Year(s)</option>
+                <option value="month">Month(s)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mb-3.5 flex flex-col gap-1">
+            <label [class]="labelClass">Owner</label>
+            <select name="ownerId" required [(ngModel)]="petForm.ownerId" [class]="inputClass">
+              <option [ngValue]="null">-- Select Owner --</option>
+              @for (o of owners; track o.id) {
+                <option [ngValue]="o.id">{{ o.id }} — {{ o.name }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="mt-5 flex justify-end gap-2">
+            <button type="button" (click)="closeModal()" [class]="btnCancelClass">Cancel</button>
+            <button type="submit" [class]="btnSubmitClass">
+              {{ modal === 'add-pet' ? 'Save Pet' : 'Update Pet' }}
+            </button>
+          </div>
+        </form>
+      }
+    </div>
+  </div>
+}

@@ -1,0 +1,265 @@
+<div class="flex min-h-screen bg-[#e8fdf5] font-nunito text-[#004d61]">
+
+  <!-- ═════════ SIDEBAR ═════════ -->
+  <aside class="fixed top-0 left-0 z-[100] flex min-h-screen w-[180px] flex-col bg-[#a8e6e1]">
+    <div class="mb-4 flex items-center gap-2.5 border-b border-[#7dd4ce] px-4 pt-2.5 pb-6">
+      <img src="image/logo.png" alt="Logo"
+           class="h-10 w-10 rounded-lg border-2 border-white bg-white object-cover"
+           (error)="$any($event.target).style.display = 'none'" />
+      <div class="text-[11px] font-black leading-tight tracking-wide text-[#004d61]">
+        PETBLOOM<br />VETERINARY
+      </div>
+    </div>
+
+    <div class="mt-1 px-4 pt-2 pb-1 text-[10px] font-bold uppercase tracking-widest text-[#004d61]">Main Menu</div>
+
+    <nav class="flex flex-col">
+      @for (item of [
+        { link: '/dashboard-staff',   icon: '🏠', label: 'Dashboard' },
+        { link: '/staff/appointment', icon: '📅', label: 'Appointment' },
+        { link: '/staff-petowner',    icon: '🐾', label: 'Pet & Owner' },
+        { link: '/staff/treatment',   icon: '💊', label: 'Treatment' },
+        { link: '/staff-payment',     icon: '💳', label: 'Payment' }
+      ]; track item.link) {
+        <a [routerLink]="item.link"
+           routerLinkActive="!bg-white !text-[#007a87]"
+           class="mr-2.5 flex items-center gap-2 rounded-r-[20px] px-4 py-2.5 text-[13px] font-bold uppercase tracking-wide text-[#004d61] no-underline transition-colors hover:bg-white hover:text-[#007a87]">
+          <span class="text-base">{{ item.icon }}</span> {{ item.label }}
+        </a>
+      }
+    </nav>
+
+    <!-- Logout button -->
+    <div class="mt-auto p-4">
+      <button type="button" (click)="openLogout()"
+              class="block w-full cursor-pointer rounded-[20px] border-none bg-white p-2.5 text-center text-[13px] font-black uppercase tracking-wide text-[#004d61] transition-colors hover:bg-[#e0f7f4]">
+        LOGOUT
+      </button>
+    </div>
+
+    <!-- Logout modal -->
+    @if (showLogoutModal) {
+      <div class="fixed inset-0 z-[9999] flex items-center justify-center bg-[rgba(28,74,90,0.38)] backdrop-blur-[2px]"
+           (click)="closeLogout()">
+        <div class="modal-pop w-[420px] max-w-[95vw] rounded-[20px] bg-white p-9 shadow-[0_16px_48px_rgba(28,74,90,0.2)]"
+             (click)="$event.stopPropagation()">
+          <h2 class="font-fredoka mb-3 text-[22px] text-[#1c4a5a]">Logout</h2>
+          <p class="text-sm font-semibold text-[#1c4a5a]">Are you sure you want to log out?</p>
+          <div class="mt-6 flex justify-end gap-2.5">
+            <button type="button" (click)="closeLogout()"
+                    class="font-fredoka rounded-full border-2 border-[#3abfa0] bg-white px-8 py-3 text-[15px] text-[#1c4a5a] transition hover:bg-[#3abfa0] hover:text-white">
+              No
+            </button>
+            <button type="button" (click)="logout()"
+                    class="font-fredoka rounded-full border-2 border-[#3abfa0] bg-[#3abfa0] px-8 py-3 text-[15px] text-white transition hover:bg-[#2a9e84]">
+              Yes
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+  </aside>
+
+  <!-- ═════════ MAIN ═════════ -->
+  <div class="ml-[180px] flex flex-1 flex-col">
+    <div class="flex h-20 items-center border-b-[3px] border-[#a8e6e1] bg-white px-[30px]">
+      <div class="font-fredoka text-[28px] uppercase tracking-[1.5px] text-[#1c4a5a]">Payment</div>
+    </div>
+
+    <div class="flex-1 px-[30px] py-7">
+      <div class="mb-[18px] flex justify-end">
+        <button (click)="openRecordModal()"
+                class="cursor-pointer rounded-[30px] border-2 border-[#004d61] bg-white px-6 py-[11px] font-fredoka text-[15px] text-[#004d61] shadow-md transition-all hover:bg-[#004d61] hover:text-white">
+          + Record Payment
+        </button>
+      </div>
+
+      <!-- Table -->
+      <div class="overflow-hidden rounded-[14px] shadow-md">
+        <table class="w-full border-separate border-spacing-y-1.5 bg-[#e8fdf5] p-2.5">
+          <thead>
+            <tr>
+              @for (h of ['Payment ID','Appointment ID','Treatment','Amount (RM)','Date','Method','Staff','Status','Action']; track h) {
+                <th class="bg-[#f9c97c] px-4 py-3.5 text-center font-fredoka text-[13px] font-normal tracking-[0.3px] text-[#004d61] first:rounded-l-[10px] last:rounded-r-[10px]">
+                  {{ h }}
+                </th>
+              }
+            </tr>
+          </thead>
+          <tbody>
+            @for (p of payments(); track p.paymentId) {
+              <tr class="group">
+                <td class="td-cell first:rounded-l-[10px]">{{ p.paymentId }}</td>
+                <td class="td-cell">{{ p.appointmentId }}</td>
+                <td class="td-cell">{{ p.treatmentName || '-' }}</td>
+                <td class="td-cell">{{ p.amount | number: '1.2-2' }}</td>
+                <td class="td-cell">{{ p.paymentDate || '-' }}</td>
+                <td class="td-cell">{{ (p.method || 'Pending') | uppercase }}</td>
+                <td class="td-cell">{{ p.staffName || '-' }}</td>
+                <td class="td-cell">
+                  @if (isPending(p)) {
+                    <span class="inline-block rounded-[20px] bg-[#fff3cd] px-3 py-1 text-[11px] font-extrabold uppercase tracking-wide text-[#856404]">PENDING</span>
+                  } @else {
+                    <span class="inline-block rounded-[20px] bg-[#d1f0e8] px-3 py-1 text-[11px] font-extrabold uppercase tracking-wide text-[#1a7a5e]">PAID</span>
+                  }
+                </td>
+                <td class="td-cell last:rounded-r-[10px]">
+                  <button (click)="openEdit(p)"
+                          class="cursor-pointer rounded-lg border-none bg-[#3498db] px-4 py-1.5 text-xs font-bold text-white transition-opacity hover:opacity-80">
+                    Edit
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="9" class="rounded-[10px] bg-[#fef3e2] p-6 text-center text-[13px] italic text-gray-400">
+                  No payment records found.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═════════ MODAL: RECORD PAYMENT ═════════ -->
+@if (showRecordModal()) {
+  <div class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/45"
+       (click)="closeRecordModal()">
+    <div class="modal-pop max-h-[90vh] w-[500px] max-w-[96vw] overflow-y-auto rounded-[18px] bg-white px-[30px] py-7 shadow-2xl"
+         (click)="$event.stopPropagation()">
+
+      <div class="mb-5 flex items-center justify-between">
+        <h2 class="font-fredoka text-[19px] text-[#007a87]">💳 Record Payment</h2>
+        <button (click)="closeRecordModal()"
+                class="cursor-pointer border-none bg-transparent text-[26px] leading-none text-gray-300 transition-colors hover:text-[#1c4a5a]">&times;</button>
+      </div>
+
+      <!-- Step 1 -->
+      <p class="section-label">Step 1 — Select Pending Payment</p>
+      <div class="mb-4 max-h-[220px] overflow-hidden overflow-y-auto rounded-xl border-2 border-[#d4f5e9]">
+        @for (p of pendingPayments(); track p.paymentId) {
+          <div (click)="selectPending(p)"
+               class="flex cursor-pointer items-center justify-between border-b border-[#e8fdf5] px-4 py-3 transition-colors last:border-b-0 hover:bg-[#f0fdf9]"
+               [class.bg-[#e0f9f0]]="selectedPending()?.paymentId === p.paymentId">
+            <div class="flex items-center gap-2.5">
+              <input type="radio" name="pending_radio"
+                     class="accent-[#2ecc8e]"
+                     [checked]="selectedPending()?.paymentId === p.paymentId"
+                     (click)="$event.stopPropagation(); selectPending(p)" />
+              <div>
+                <div class="text-[13px] font-bold text-[#004d61]">Payment {{ p.paymentId }} — Appt {{ p.appointmentId }}</div>
+                <div class="mt-0.5 text-[11px] text-gray-500">{{ p.treatmentName }} &nbsp;|&nbsp; 📅 {{ p.appointmentDate }}</div>
+              </div>
+            </div>
+            <div class="whitespace-nowrap text-sm font-extrabold text-[#007a87]">RM {{ p.amount | number: '1.2-2' }}</div>
+          </div>
+        } @empty {
+          <div class="p-[18px] text-center text-[13px] italic text-gray-400">✅ All payments have been processed.</div>
+        }
+      </div>
+
+      <!-- Step 2 -->
+      <p class="section-label">Step 2 — Confirm Details</p>
+      <div class="mb-3.5 grid grid-cols-2 gap-3">
+        <div>
+          <label class="form-label">Appointment ID</label>
+          <input type="text" readonly placeholder="Auto-filled" class="form-input form-readonly"
+                 [value]="selectedPending()?.appointmentId ?? ''" />
+        </div>
+        <div>
+          <label class="form-label">Amount (RM)</label>
+          <input type="text" readonly placeholder="Auto-filled" class="form-input form-readonly"
+                 [value]="selectedPending() ? 'RM ' + (selectedPending()!.amount | number: '1.2-2') : ''" />
+        </div>
+        <div class="col-span-2">
+          <label class="form-label">Treatment</label>
+          <input type="text" readonly placeholder="Auto-filled" class="form-input form-readonly"
+                 [value]="selectedPending()?.treatmentName ?? ''" />
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <p class="section-label">Step 3 — Choose Payment Method</p>
+      <div class="mb-3.5">
+        <label class="form-label">Payment Method</label>
+        <select [(ngModel)]="recordMethod" class="form-input">
+          <option value="">-- Select Method --</option>
+          <option value="CASH">Cash</option>
+          <option value="ONLINE QR">Online QR</option>
+          <option value="CARD">Credit / Debit Card</option>
+          <option value="ONLINE BANKING">Online Banking</option>
+        </select>
+      </div>
+
+      <div class="mt-5 flex justify-end gap-2.5">
+        <button (click)="closeRecordModal()"
+                class="cursor-pointer rounded-[10px] border-none bg-gray-200 px-[26px] py-2.5 text-[13px] font-bold text-gray-600">
+          Cancel
+        </button>
+        <button (click)="saveRecord()"
+                class="cursor-pointer rounded-[10px] border-none bg-[#2ecc8e] px-[26px] py-2.5 text-[13px] font-bold text-white transition-colors hover:bg-[#007a87]">
+          Save Payment
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ═════════ MODAL: EDIT PAYMENT ═════════ -->
+@if (editPayment(); as ep) {
+  <div class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/45"
+       (click)="closeEdit()">
+    <div class="modal-pop max-h-[90vh] w-[500px] max-w-[96vw] overflow-y-auto rounded-[18px] bg-white px-[30px] py-7 shadow-2xl"
+         (click)="$event.stopPropagation()">
+
+      <div class="mb-5 flex items-center justify-between">
+        <h2 class="font-fredoka text-[19px] text-[#007a87]">✏️ Edit Payment</h2>
+        <button (click)="closeEdit()"
+                class="cursor-pointer border-none bg-transparent text-[26px] leading-none text-gray-300 transition-colors hover:text-[#1c4a5a]">&times;</button>
+      </div>
+
+      <div class="mb-3.5 grid grid-cols-2 gap-3">
+        <div>
+          <label class="form-label">Payment ID</label>
+          <input type="text" readonly class="form-input form-readonly" [value]="ep.paymentId" />
+        </div>
+        <div>
+          <label class="form-label">Appointment ID</label>
+          <input type="text" readonly class="form-input form-readonly" [value]="ep.appointmentId" />
+        </div>
+        <div>
+          <label class="form-label">Amount (RM)</label>
+          <input type="text" readonly class="form-input form-readonly" [value]="ep.amount | number: '1.2-2'" />
+        </div>
+        <div>
+          <label class="form-label">Treatment</label>
+          <input type="text" readonly class="form-input form-readonly" [value]="ep.treatmentName || '-'" />
+        </div>
+      </div>
+
+      <div class="mb-3.5">
+        <label class="form-label">Payment Method</label>
+        <select [(ngModel)]="editMethod" class="form-input">
+          <option value="">-- Select Method --</option>
+          @for (m of methods; track m) {
+            <option [value]="m">{{ m }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="mt-5 flex justify-end gap-2.5">
+        <button (click)="closeEdit()"
+                class="cursor-pointer rounded-[10px] border-none bg-gray-200 px-[26px] py-2.5 text-[13px] font-bold text-gray-600">
+          Cancel
+        </button>
+        <button (click)="saveEdit()"
+                class="cursor-pointer rounded-[10px] border-none bg-[#2ecc8e] px-[26px] py-2.5 text-[13px] font-bold text-white transition-colors hover:bg-[#007a87]">
+          Update Payment
+        </button>
+      </div>
+    </div>
+  </div>
+}
