@@ -78,6 +78,23 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/treatment/vet-treatment').then((m) => m.VetTreatment)
   },
+   {
+    path: 'dashboard-staff',
+    loadComponent: () =>
+      import('./features/dashboard/dashboard-staff').then((m) => m.StaffDashboard)
+  },
+  {
+    path: 'staff-petowner',
+    loadComponent: () =>
+      import('./features/staff-petowner/staff-petowner').then((m) => m.StaffPetOwner)
+  },
+
+  {
+    path: 'staff-payment',
+    loadComponent: () =>
+      import('./features/staff-payment/staff-payment').then((m) => m.StaffPayment)
+  },
+
 
 
   // Catch-all
