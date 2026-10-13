@@ -1,0 +1,139 @@
+<p-toast position="top-right" />
+<p-confirmdialog />
+
+<div class="flex min-h-screen bg-[#f0faf9]">
+
+  <!-- ── Sidebar ── -->
+  <aside class="sidebar fixed top-0 left-0 h-screen w-[180px] flex flex-col py-5 bg-[#a8e6e1]">
+    <div class="flex items-center gap-2.5 px-4 pt-2.5 pb-6 mb-4 border-b border-[#7dd4ce]">
+      <div class="h-12 w-12 shrink-0 overflow-hidden rounded-full bg-[#fdfdf9] ring-2 ring-[#a2dfd0]">
+        <img src="image/logo.png" alt="PetBloom logo" class="h-full w-full object-contain" />
+      </div>
+      <div class="text-[11px] font-black leading-tight tracking-wide text-[#004d61]">
+        PetBloom<br />VETERINARY
+      </div>
+    </div>
+
+    <div class="px-4 pt-2 pb-1 mt-1 text-[10px] font-bold uppercase tracking-widest text-[#004d61]">
+      Main Menu
+    </div>
+
+    <a routerLink="/staff-dashboard" routerLinkActive="active" class="side-link"><i class="pi pi-home"></i> Dashboard</a>
+    <a routerLink="/staff-appointment" routerLinkActive="active" class="side-link"><i class="pi pi-calendar"></i> Appointment</a>
+    <a routerLink="/staff-ownerpet" routerLinkActive="active" class="side-link"><i class="pi pi-heart"></i> Pet Owner</a>
+    <a routerLink="/staff-treatment" routerLinkActive="active" class="side-link"><i class="pi pi-wrench"></i> Treatment</a>
+    <a routerLink="/staff-payment" routerLinkActive="active" class="side-link"><i class="pi pi-credit-card"></i> Payment</a>
+
+    <div class="mt-auto p-4">
+      <p-button label="LOGOUT" styleClass="w-full logout-btn" (onClick)="confirmLogout()" />
+    </div>
+  </aside>
+
+  <!-- ── Main content ── -->
+  <main class="flex-1 ml-[180px] p-8 flex flex-col">
+    <h1 class="text-[26px] font-black uppercase tracking-wide text-[#004d61] mb-6 pb-3 border-b-2 border-[#a8e6e1]">
+      Treatment Management
+    </h1>
+
+    <div class="flex justify-end mb-5">
+      <p-button label="Add Treatment" icon="pi pi-plus" rounded (onClick)="openAddDialog()" styleClass="btn-teal" />
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-md">
+      <p-table
+        [value]="treatments()"
+        [paginator]="true"
+        [rows]="10"
+        [rowsPerPageOptions]="[10, 25, 50]"
+        [rowHover]="true"
+        styleClass="treatment-table"
+      >
+        <ng-template #header>
+          <tr>
+            <th class="text-center">Treatment ID</th>
+            <th class="text-center">Appt ID</th>
+            <th class="text-center">Pet ID</th>
+            <th class="text-center">Description</th>
+            <th class="text-center">Cost (RM)</th>
+            <th class="text-center">Vet</th>
+            <th class="text-center">Action</th>
+          </tr>
+        </ng-template>
+
+        <ng-template #body let-row>
+          <tr>
+            <td class="text-center">{{ row.treatmentId }}</td>
+            <td class="text-center">{{ row.appointmentId }}</td>
+            <td class="text-center">{{ row.petId }}</td>
+            <td class="text-center">{{ row.description }}</td>
+            <td class="text-center">{{ totalCost(row) | number: '1.2-2' }}</td>
+            <td class="text-center">{{ row.vetName ? 'DR. ' + (row.vetName | uppercase) : 'N/A' }}</td>
+            <td class="text-center whitespace-nowrap">
+              <p-button label="Edit" size="small" styleClass="btn-teal mr-1" (onClick)="openEditDialog(row)" />
+              <p-button label="Del" size="small" severity="danger" (onClick)="confirmDelete(row)" />
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template #emptymessage>
+          <tr>
+            <td colspan="7" class="text-center italic text-gray-500 py-8">No treatment records found.</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </main>
+</div>
+
+<!-- ── Add / Edit Dialog ── -->
+<p-dialog
+  [(visible)]="dialogVisible"
+  [modal]="true"
+  [draggable]="false"
+  [style]="{ width: '480px' }"
+  [breakpoints]="{ '640px': '95vw' }"
+  [header]="editingId() ? '✏️ Edit Treatment' : '➕ Add Treatment'"
+>
+  <form [formGroup]="form" (ngSubmit)="save()" class="grid grid-cols-2 gap-3">
+
+    <div class="flex flex-col gap-1 col-span-2">
+      <label class="field-label">Appointment</label>
+      <p-select formControlName="appointmentId" [options]="appointmentOptions()" optionLabel="label" optionValue="value"
+                placeholder="-- Select Appointment --" [filter]="true" appendTo="body" styleClass="w-full" />
+    </div>
+
+    <div class="flex flex-col gap-1 col-span-2">
+      <label class="field-label">Pet ID (auto-filled)</label>
+      <input pInputText type="text" [value]="petId ?? ''" disabled placeholder="Auto from Appointment" class="w-full" />
+    </div>
+
+    <div class="flex flex-col gap-1 col-span-2">
+      <label class="field-label">Treatment</label>
+      <p-select formControlName="treatmentName" [options]="treatmentOptions" optionLabel="label" optionValue="value"
+                placeholder="-- Select Treatment --" [filter]="true" appendTo="body" styleClass="w-full" />
+    </div>
+
+    <div class="flex flex-col gap-1 col-span-2">
+      <label class="field-label">Treatment Cost (RM)</label>
+      <div class="cost-display">
+        @if (form.controls.treatmentName.value) {
+          Cost: <span>RM {{ cost | number: '1.2-2' }}</span>
+        } @else {
+          Select a treatment to see the cost
+        }
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-1 col-span-2">
+      <label class="field-label">Veterinarian</label>
+      <p-select formControlName="vetId" [options]="vetOptions()" optionLabel="label" optionValue="value"
+                placeholder="-- Select Veterinarian --" appendTo="body" styleClass="w-full" />
+    </div>
+
+    <div class="col-span-2 flex justify-end gap-2 mt-4">
+      <p-button type="button" label="Cancel" severity="secondary" [outlined]="true" (onClick)="dialogVisible = false" />
+      <p-button type="submit" [label]="editingId() ? 'Update Treatment' : 'Save Treatment'"
+                [disabled]="form.invalid" styleClass="btn-teal" />
+    </div>
+  </form>
+</p-dialog>

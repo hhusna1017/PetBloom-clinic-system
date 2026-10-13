@@ -6,6 +6,9 @@ import { StaffLogin } from './features/staff-login/staff-login';
 import { VetLogin } from './features/vet-login/vet-login';
 import { PaymentPetOwner } from './features/payment-petOwner/payment-petOwner';
 import { ProfilePetOwner } from './features/profile/profile-petOwner';
+import { StaffAppointment } from './features/staff-appointment/staff-appointment';
+import { VetTreatment } from './features/treatment/vet-treatment';
+import { StaffTreatment } from './features/staff-treatment/staff-treatment';
 
 export const routes: Routes = [
   {
@@ -24,6 +27,10 @@ export const routes: Routes = [
   { path: 'my-pets', loadComponent: () => import('./features/my-pets/my-pet').then((m) => m.MyPet) },
   { path: 'payment-petOwner', loadComponent: () => import('./features/payment-petOwner/payment-petOwner').then((m) => m.PaymentPetOwner) },
   { path: 'profile-petOwner', loadComponent: () => import('./features/profile/profile-petOwner').then((m) => m.ProfilePetOwner) },
+  { path: 'vet-treatment', loadComponent: () => import('./features/treatment/vet-treatment').then((m) => m.VetTreatment) },
+  { path: 'staff-appointment', component: StaffAppointment },
+  { path: 'staff-treatment', component: StaffTreatment },
+  { path: 'vet-treatment', component: VetTreatment },
   {
 
     path: 'register',
