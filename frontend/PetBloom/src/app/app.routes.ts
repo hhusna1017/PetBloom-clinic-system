@@ -47,5 +47,46 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/register-vet/register-vet').then((m) => m.RegisterVetComponent),
   },
-  { path: '**', redirectTo: '' },
+  
+  {
+    path: 'services',
+    loadComponent: () =>
+      import('./features/services/service').then((m) => m.Services)
+  },
+  {
+  path: 'profile',
+  loadComponent: () =>
+    import('./features/profile/profile-petOwner').then((m) => m.ProfilePetOwner)
+},
+  {
+    path: 'payment',
+    loadComponent: () =>
+      import('./features/payment-petOwner/payment-petOwner').then((m) => m.PaymentPetOwner)
+  },
+   {
+    path: 'vet-treatment',
+    loadComponent: () =>
+      import('./features/treatment/vet-treatment').then((m) => m.VetTreatment)
+  },
+   {
+    path: 'dashboard-staff',
+    loadComponent: () =>
+      import('./features/dashboard/dashboard-staff').then((m) => m.StaffDashboard)
+  },
+  {
+    path: 'staff-petowner',
+    loadComponent: () =>
+      import('./features/staff-petowner/staff-petowner').then((m) => m.StaffPetOwner)
+  },
+
+  {
+    path: 'staff-payment',
+    loadComponent: () =>
+      import('./features/staff-payment/staff-payment').then((m) => m.StaffPayment)
+  },
+
+
+
+  // Catch-all
+  { path: '**', redirectTo: 'login' }
 ];

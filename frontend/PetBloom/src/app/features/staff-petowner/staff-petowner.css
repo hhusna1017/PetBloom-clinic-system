@@ -1,0 +1,16 @@
+
+:host {
+  display: block;
+}
+
+/* Scrollbar nipis (sama macam versi PHP) */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f0faf9;
+}
+::-webkit-scrollbar-thumb {
+  background: #a8e6e1;
+  border-radius: 4px;
+}
